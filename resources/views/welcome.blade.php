@@ -1549,20 +1549,20 @@
         </header>
         <div class="flex items-center justify-center w-full transition-opacity opacity-100 duration-750 lg:grow starting:opacity-0">
             <main class="flex max-w-[335px] w-full flex-col-reverse lg:max-w-4xl lg:flex-row">
+                <audio id="beep" src="/sound/beep.mp3" preload="auto"></audio>
+                <div id="reader" style="width:300px"></div>
                 <div id="result" class="mt-4 font-bold text-white"></div>
-                <div id="result" style="margin-top:10px; font-weight:bold;"></div>
-
             </main>
         </div>
 
         @if (Route::has('login'))
         <div class="h-14.5 hidden lg:block"></div>
         @endif
-
         <script src="https://unpkg.com/html5-qrcode"></script>
         <script>
             const qr = new Html5Qrcode("reader");
-
+            const beep = document.getElementById('beep');
+            let lastQr = null;
             qr.start({
                     facingMode: "environment"
                 }, {
@@ -1571,7 +1571,12 @@
                 },
                 qrCodeMessage => {
                     document.getElementById('result').innerText = "QR leído: " + qrCodeMessage; // 👈 pantalla
-                    console.log("QR leído:", qrCodeMessage); // 👈 consola
+                    if (qrCodeMessage === lastQr) return; // bloquea repetido
+
+                    beep.currentTime = 0; 
+                    beep.play().catch(() => {});
+
+                    lastQr = qrCodeMessage;
 
                     fetch('/scan-qr', {
                         method: 'POST',
