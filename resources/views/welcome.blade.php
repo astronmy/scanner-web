@@ -1571,6 +1571,8 @@
                 },
                 qrCodeMessage => {
                     document.getElementById('result').innerText = "QR leído: " + qrCodeMessage; // 👈 pantalla
+                    console.log("QR leído:", qrCodeMessage); // 👈 consola
+
                     fetch('/scan-qr', {
                         method: 'POST',
                         headers: {
