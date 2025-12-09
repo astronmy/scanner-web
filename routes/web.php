@@ -1,15 +1,46 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TableAssignmentController;
+use App\Http\Controllers\ScannerController;
+use App\Http\Controllers\ScanController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+     return redirect()->route('login');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::view('/dashboard', 'dashboard')->name('dashboard');
+
+    Route::prefix('assignments')
+        ->name('assignments.')
+        ->controller(TableAssignmentController::class)
+        ->group(function () {
+            Route::get('/', 'index')->name('index');                
+            Route::get('/form', 'importForm')->name('import-form'); 
+            Route::post('/import', 'import')->name('import');       
+
+            Route::get('/{assignment}/edit', 'edit')->name('edit');
+            Route::put('/{assignment}', 'update')->name('update');
+            Route::delete('/{assignment}', 'destroy')->name('destroy');
+        });
+
+    Route::prefix('scanners')
+        ->name('scanners.')
+        ->controller(ScannerController::class)
+        ->group(function () {
+            Route::get('/', 'start')->name('start');
+            Route::post('/', 'storage')->name('storage');                
+        });
+
+    Route::prefix('scans')
+    ->name('scans.')
+    ->controller(ScanController::class)
+    ->group(function () {
+        Route::get('/', 'index')->name('index'); // scans.index
+    });
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -17,4 +48,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
