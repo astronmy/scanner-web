@@ -15,7 +15,15 @@
                         <h1 class="text-lg font-semibold text-gray-800 dark:text-gray-100">
                             Historial de Scans
                         </h1>
+
+                        <a href="{{ route('scans.export', request()->query()) }}"
+                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md
+              bg-violet-600 text-white hover:bg-violet-700
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
+                            Exportar
+                        </a>
                     </div>
+
 
                     {{-- Filtros --}}
                     <form method="GET" action="{{ route('scans.index') }}" class="mb-6 space-y-4">
@@ -35,8 +43,7 @@
                                            bg-white dark:bg-gray-900
                                            text-gray-900 dark:text-gray-100
                                            placeholder-gray-400 dark:placeholder-gray-500
-                                           shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
-                                >
+                                           shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
                             </div>
 
                             {{-- Usuario --}}
@@ -50,13 +57,12 @@
                                     class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600
                                            bg-white dark:bg-gray-900
                                            text-gray-900 dark:text-gray-100
-                                           shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
-                                >
+                                           shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
                                     <option value="">Todos</option>
                                     @foreach($users as $user)
-                                        <option value="{{ $user->id }}" @selected(request('user_id') == $user->id)>
-                                            {{ $user->name ?? $user->email }}
-                                        </option>
+                                    <option value="{{ $user->id }}" @selected(request('user_id')==$user->id)>
+                                        {{ $user->name ?? $user->email }}
+                                    </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -74,8 +80,7 @@
                                     class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600
                                            bg-white dark:bg-gray-900
                                            text-gray-900 dark:text-gray-100
-                                           shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
-                                >
+                                           shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
                             </div>
 
                             <div class="md:col-span-1">
@@ -90,8 +95,7 @@
                                     class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600
                                            bg-white dark:bg-gray-900
                                            text-gray-900 dark:text-gray-100
-                                           shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
-                                >
+                                           shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
                             </div>
                         </div>
 
@@ -104,7 +108,7 @@
                             </button>
 
                             <a href="{{ route('scans.index') }}"
-                               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium
+                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium
                                       rounded-md bg-red-600 text-white hover:bg-red-700
                                       focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                                 Limpiar
@@ -134,26 +138,26 @@
                                 </thead>
                                 <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
                                     @forelse($scans as $scan)
-                                        <tr class="hover:bg-gray-50 hover:dark:bg-gray-800">
-                                            <td class="px-6 py-3 whitespace-nowrap text-gray-700 dark:text-gray-200">
-                                                {{ $scan->id }}
-                                            </td>
-                                            <td class="px-6 py-3 text-gray-700 dark:text-gray-200 whitespace-normal break-words">
-                                                {{ $scan->value }}
-                                            </td>
-                                            <td class="px-6 py-3 text-gray-700 dark:text-gray-200 whitespace-normal break-words">
-                                                {{ $scan->user?->name ?? $scan->user?->email ?? '—' }}
-                                            </td>
-                                            <td class="px-6 py-3 whitespace-nowrap text-gray-500 dark:text-gray-400 text-xs">
-                                                {{ $scan->scanned_at?->format('d/m/Y H:i') ?? $scan->created_at?->format('d/m/Y H:i') }}
-                                            </td>
-                                        </tr>
+                                    <tr class="hover:bg-gray-50 hover:dark:bg-gray-800">
+                                        <td class="px-6 py-3 whitespace-nowrap text-gray-700 dark:text-gray-200">
+                                            {{ $scan->id }}
+                                        </td>
+                                        <td class="px-6 py-3 text-gray-700 dark:text-gray-200 whitespace-normal break-words">
+                                            {{ $scan->value }}
+                                        </td>
+                                        <td class="px-6 py-3 text-gray-700 dark:text-gray-200 whitespace-normal break-words">
+                                            {{ $scan->user?->name ?? $scan->user?->email ?? '—' }}
+                                        </td>
+                                        <td class="px-6 py-3 whitespace-nowrap text-gray-500 dark:text-gray-400 text-xs">
+                                            {{ $scan->scanned_at?->format('d/m/Y H:i') ?? $scan->created_at?->format('d/m/Y H:i') }}
+                                        </td>
+                                    </tr>
                                     @empty
-                                        <tr>
-                                            <td colspan="4" class="px-6 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
-                                                No se encontraron registros de scans.
-                                            </td>
-                                        </tr>
+                                    <tr>
+                                        <td colspan="4" class="px-6 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
+                                            No se encontraron registros de scans.
+                                        </td>
+                                    </tr>
                                     @endforelse
                                 </tbody>
                             </table>

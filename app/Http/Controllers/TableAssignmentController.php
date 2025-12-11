@@ -37,9 +37,7 @@ class TableAssignmentController extends Controller
             $request->file('file')
         );
 
-        return response()->json([
-            'message' => 'Table assignments imported successfully'
-        ]);
+        return redirect()->route('assignments.index');
     }
 
     public function importForm()

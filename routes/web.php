@@ -31,14 +31,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->controller(ScannerController::class)
         ->group(function () {
             Route::get('/', 'start')->name('start');
-            Route::post('/', 'storage')->name('storage');                
+            Route::post('/', 'storage')->name('storage');
         });
 
     Route::prefix('scans')
     ->name('scans.')
     ->controller(ScanController::class)
     ->group(function () {
-        Route::get('/', 'index')->name('index'); // scans.index
+        Route::get('/', 'index')->name('index');
+        Route::get('/export', 'export')->name('export');      
     });
 });
 

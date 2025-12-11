@@ -62,6 +62,9 @@
             const btnNew = document.getElementById('btn-new');
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
+            const scanCounterEl = document.getElementById('scan-counter');
+            let scanCounter = scanCounterEl ? parseInt(scanCounterEl.dataset.count || '0', 10) : 0;
+
             let isScanning = false; // 👈 estado interno
 
             async function sendScan(decodedText) {
@@ -99,6 +102,11 @@
 
                         result.innerHTML = message;
                         status.textContent = '';
+
+                        if (scanCounterEl) {
+                            scanCounterEl.textContent = data.totals;
+                        }
+
                     } else if (data && data.message) {
                         result.textContent = data.message;
                     } else {
@@ -202,4 +210,15 @@
         });
     </script>
 
+    <div class="fixed bottom-6 right-6">
+    <div id="scan-counter"
+         data-count="{{ $total ?? 0 }}"
+         class="w-16 h-16 rounded-full bg-emerald-600 text-white
+                flex items-center justify-center
+                text-lg font-bold shadow-xl
+                border-2 border-white dark:border-gray-800
+                select-none">
+        {{ $total ?? 0 }}
+    </div>
+</div>
 </x-app-layout>

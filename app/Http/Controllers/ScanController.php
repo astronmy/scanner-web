@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ScansExport;
 use App\Models\Scan;
 use App\Models\User;
 use Illuminate\Http\Request;
-
+use Maatwebsite\Excel\Facades\Excel;
 class ScanController extends Controller
 {
     public function index(Request $request)
@@ -35,5 +36,14 @@ class ScanController extends Controller
         $users = User::orderBy('name')->get(['id', 'name', 'email']);
 
         return view('scans.index', compact('scans', 'users'));
+    }
+
+    public function export(Request $request)
+    {
+        $filters = $request->only(['value', 'user_id', 'from', 'to']);
+
+        $fileName = 'scans_' . now()->format('Ymd_His') . '.xlsx';
+
+        return Excel::download(new ScansExport($filters), $fileName);
     }
 }
