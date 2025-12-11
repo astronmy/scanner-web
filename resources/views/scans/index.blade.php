@@ -134,6 +134,9 @@
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider w-1/4">
                                             Fecha / Hora
                                         </th>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider text-right w-24">
+                                            Acciones
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
@@ -150,6 +153,26 @@
                                         </td>
                                         <td class="px-6 py-3 whitespace-nowrap text-gray-500 dark:text-gray-400 text-xs">
                                             {{ $scan->scanned_at?->format('d/m/Y H:i') ?? $scan->created_at?->format('d/m/Y H:i') }}
+                                        </td>
+                                        <td class="px-6 py-3 whitespace-nowrap text-right">
+
+                                            <form action="{{ route('scans.destroy', $scan) }}"
+                                                method="POST"
+                                                onsubmit="return confirm('¿Seguro que querés eliminar este scan?');"
+                                                class="inline-block">
+
+                                                @csrf
+                                                @method('DELETE')
+
+                                                <button type="submit"
+                                                    class="px-3 py-1 text-xs font-semibold rounded-md
+                   bg-red-600 text-white hover:bg-red-700
+                   focus:outline-none focus:ring-2 focus:ring-offset-2
+                   focus:ring-red-500">
+                                                    Eliminar
+                                                </button>
+                                            </form>
+
                                         </td>
                                     </tr>
                                     @empty

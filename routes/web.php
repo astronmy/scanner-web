@@ -39,7 +39,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     ->controller(ScanController::class)
     ->group(function () {
         Route::get('/', 'index')->name('index');
-        Route::get('/export', 'export')->name('export');      
+        Route::get('/export', 'export')->name('export');
+        Route::delete('/scans/{scan}', [ScanController::class, 'destroy'])
+    ->name('destroy');      
     });
 });
 

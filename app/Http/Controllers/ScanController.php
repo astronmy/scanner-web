@@ -7,6 +7,7 @@ use App\Models\Scan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+
 class ScanController extends Controller
 {
     public function index(Request $request)
@@ -45,5 +46,14 @@ class ScanController extends Controller
         $fileName = 'scans_' . now()->format('Ymd_His') . '.xlsx';
 
         return Excel::download(new ScansExport($filters), $fileName);
+    }
+
+    public function destroy(Scan $scan)
+    {
+        $scan->delete();
+
+        return redirect()
+            ->back()
+            ->with('success', 'Scan eliminado correctamente.');
     }
 }
