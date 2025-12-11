@@ -8,10 +8,11 @@ use Illuminate\Http\Request;
 
 class ScannerController extends Controller
 {
-    public function start() {
+    public function start(Request $request) {
         $scans = Scan::all()->count();
+        $userScans = Scan::where('user_id', $request->user()->id)->count();
         $total = TableAssignment::all()->count();
-        return view('scanners.start', compact('total', 'scans'));
+        return view('scanners.start', compact('total', 'scans', 'userScans'));
     }
     public function storage(Request $request) {
         $search = TableAssignment::where('guest_name', $request->value)->first();
@@ -34,13 +35,15 @@ class ScannerController extends Controller
 
         $scans = Scan::all()->count();
         $total = TableAssignment::all()->count();
+        $userScans = Scan::where('user_id', $request->user()->id)->count();
 
         return response()->json([
                 'location' => $search->table_number,
                 'name' => $search->guest_name,
                 'exists' => (int) $alreadyScan,
                 'scans' => $scans,
-                'total' => $total
+                'total' => $total,
+                'user_scans'=> $userScans
         ]);
 
     }

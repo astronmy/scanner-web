@@ -104,7 +104,7 @@
                         status.textContent = '';
 
                         if (scanCounterEl) {
-                            let counter = data.scans+'/'+data.totals
+                            let counter = data.user_scans+'/'+data.scans+'/'+data.totals
                             scanCounterEl.textContent = data.totals;
                         }
 
@@ -219,7 +219,7 @@
                 text-lg font-bold shadow-xl
                 border-2 border-white dark:border-gray-800
                 select-none">
-        {{ $scans ?? 0 }}/{{$total ?? 0}}
+        {{ $userScans ?? 0 }}/{{ $scans ?? 0 }}/{{$total ?? 0}}
     </div>
 </div>
 </x-app-layout>
