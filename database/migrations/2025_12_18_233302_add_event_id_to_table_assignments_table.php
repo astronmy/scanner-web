@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('table_assignments', function (Blueprint $table) {
+       /*  Schema::table('table_assignments', function (Blueprint $table) {
             $table->foreignId('event_id')
                 ->nullable()
                 ->after('id')
                 ->constrained('events')
                 ->cascadeOnDelete();
-        });
+        }); */
     }
 
     /**
