@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::table('table_assignments', function (Blueprint $table) {
             $table->foreignId('event_id')
-              ->after('id')
-              ->constrained('events')
-              ->cascadeOnDelete();
+                ->nullable()
+                ->after('id')
+                ->constrained('events')
+                ->cascadeOnDelete();
         });
     }
 
