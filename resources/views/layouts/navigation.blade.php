@@ -15,11 +15,17 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                     <x-nav-link :href="route('assignments.index')" :active="request()->routeIs('assignments.index')">
+                    <x-nav-link :href="route('events.index')" :active="request()->routeIs('events.index')">
+                        {{ __('Eventos') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('assignments.index')" :active="request()->routeIs('assignments.index')">
                         {{ __('Ubicaciones') }}
                     </x-nav-link>
                     <x-nav-link :href="route('scans.index')" :active="request()->routeIs('scans.index')">
-                        {{ __('Scaneos') }}
+                        {{ __('Escaneos') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
+                        {{ __('Usuarios') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -76,11 +82,17 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('events.index')" :active="request()->routeIs('events.index')">
+                {{ __('Eventos') }}
+            </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('assignments.index')" :active="request()->routeIs('assignments.index')">
                 {{ __('Ubicaciones') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('scans.index')" :active="request()->routeIs('scans.index')">
                 {{ __('Escaneos') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
+                {{ __('Usuarios') }}
             </x-responsive-nav-link>
         </div>
 

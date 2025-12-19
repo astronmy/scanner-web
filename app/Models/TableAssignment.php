@@ -7,12 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class TableAssignment extends Model
 {
-     use HasFactory;
+    use HasFactory;
 
     protected $table = 'table_assignments';
 
     protected $fillable = [
         'table_number',
         'guest_name',
+        'event_id'
     ];
+
+    public function tableAssignments()
+    {
+        return $this->hasMany(TableAssignment::class);
+    }
 }

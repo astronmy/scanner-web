@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TableAssignmentController;
 use App\Http\Controllers\ScannerController;
 use App\Http\Controllers\ScanController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -43,6 +45,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/scans/{scan}', [ScanController::class, 'destroy'])
     ->name('destroy');      
     });
+
+     Route::resource('events', EventController::class)->except(['show']);
+     Route::resource('users', UserController::class)->except(['show']);
 });
 
 Route::middleware('auth')->group(function () {
