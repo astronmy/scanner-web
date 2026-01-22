@@ -15,7 +15,7 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    @if (session()->has('currentEvent') || auth()->user()->isAdmin())
+                    @if (session()->has('currentEvent') || auth()->user()?->isAdmin())
                         <x-nav-link :href="route('assignments.index')" :active="request()->routeIs('assignments.index')">
                             {{ __('Ubicaciones') }}
                         </x-nav-link>
@@ -23,7 +23,7 @@
                             {{ __('Escaneos') }}
                         </x-nav-link>
                     @endif
-                    @if (auth()->user()->isAdmin())
+                    @if (auth()->user()?->isAdmin())
                         <x-nav-link :href="route('events.index')" :active="request()->routeIs('events.index')">
                             {{ __('Eventos') }}
                         </x-nav-link>
