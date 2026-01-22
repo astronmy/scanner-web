@@ -7,20 +7,28 @@
 
     <div class="py-12">
         @foreach($events as $event)
-            <div class="p-6 text-gray-900 dark:text-gray-100 flex items-center justify-center min-h-[60vh]">
-                <a href="{{ route('scanners.start') }}"
-                    class="w-full max-w-xs aspect-square
-                flex flex-col items-center justify-center gap-4
-                rounded-2xl
-                bg-emerald-600 hover:bg-emerald-700
-                text-white
-                shadow-xl
-                transition-all duration-200 active:scale-95">
+        <div class="p-3 text-gray-900 dark:text-gray-100 flex items-center justify-center min-h-[60vh]">
+            <form method="POST" action="{{ route('dashboard.event', $event->id) }}"
+                class="w-full max-w-xs aspect-square">
+                @csrf
+
+                <button type="submit"
+                    class="w-full h-full
+            flex flex-col items-center justify-center gap-4
+            rounded-2xl
+            bg-emerald-600 hover:bg-emerald-700
+            text-white
+            shadow-xl
+            transition-all duration-200 active:scale-95">
+
                     <span class="text-xl font-bold tracking-wide">
-                        {{$event->name}}
+                        {{ $event->name }}
                     </span>
-                </a>
-            </div>
+
+                </button>
+            </form>
+        </div>
+
         @endforeach
 
     </div>
