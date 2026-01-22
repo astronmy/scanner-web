@@ -51,6 +51,11 @@ class User extends Authenticatable
         return $this->belongsToMany(Event::class)->withTimestamps();
     }
 
+    public function hasEvent(int $eventId): bool
+    {
+        return $this->events()->whereKey($eventId)->exists();
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === RoleEnum::ADMIN;

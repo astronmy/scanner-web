@@ -15,18 +15,25 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('events.index')" :active="request()->routeIs('events.index')">
-                        {{ __('Eventos') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('assignments.index')" :active="request()->routeIs('assignments.index')">
-                        {{ __('Ubicaciones') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('scans.index')" :active="request()->routeIs('scans.index')">
-                        {{ __('Escaneos') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
-                        {{ __('Usuarios') }}
-                    </x-nav-link>
+                    @if (session()->has('currentEvent'))
+                        <x-nav-link :href="route('assignments.index')" :active="request()->routeIs('assignments.index')">
+                            {{ __('Ubicaciones') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('scans.index')" :active="request()->routeIs('scans.index')">
+                            {{ __('Escaneos') }}
+                        </x-nav-link>
+                    @endif
+                    @auth
+                        @if (auth()->user()->isAdmin())
+                            <x-nav-link :href="route('events.index')" :active="request()->routeIs('events.index')">
+                                {{ __('Eventos') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
+                                {{ __('Usuarios') }}
+                            </x-nav-link>
+                        @endif
+                    @endauth
+                    
                 </div>
             </div>
 
@@ -82,18 +89,24 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('events.index')" :active="request()->routeIs('events.index')">
-                {{ __('Eventos') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('assignments.index')" :active="request()->routeIs('assignments.index')">
-                {{ __('Ubicaciones') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('scans.index')" :active="request()->routeIs('scans.index')">
-                {{ __('Escaneos') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
-                {{ __('Usuarios') }}
-            </x-responsive-nav-link>
+            @if (session()->has('currentEvent'))
+                <x-responsive-nav-link :href="route('assignments.index')" :active="request()->routeIs('assignments.index')">
+                    {{ __('Ubicaciones') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('scans.index')" :active="request()->routeIs('scans.index')">
+                    {{ __('Escaneos') }}
+                </x-responsive-nav-link>
+            @endif
+            @auth
+                @if (auth()->user()->isAdmin())
+                    <x-responsive-nav-link :href="route('events.index')" :active="request()->routeIs('events.index')">
+                        {{ __('Eventos') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
+                        {{ __('Usuarios') }}
+                    </x-responsive-nav-link>
+                @endif
+            @endauth
         </div>
 
         <!-- Responsive Settings Options -->
