@@ -41,13 +41,13 @@ class DashboardController extends Controller
         $event = Event::findOrFail($eventId);
         $user = $request->user();
 
-        if(! $user->hasEvent($eventId)) {
+        if(! $user->hasEvent($eventId) && !$user->isAdmin()) {
             abort(404);
         }
 
         $request->session()->put('currentEvent', $event->id); 
         $request->session()->put('currentEventName', $event->name); 
-        
+
         return view('menu');
     }
 
