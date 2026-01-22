@@ -14,6 +14,10 @@ class TableAssignmentController extends Controller
     {
         $query = TableAssignment::query();
 
+        if (session()->has('currentEvent')) {
+            $query->where('event_id', session('currentEvent'));
+        }
+
         if ($request->filled('table_number')) {
             $query->where('table_number', $request->table_number);
         }
@@ -60,6 +64,7 @@ class TableAssignmentController extends Controller
         $assignment->update([
             'table_number' => $request->table_number,
             'guest_name'   => $request->guest_name,
+            'event_id' => session('currentEvent') ?? null
         ]);
 
         return redirect()

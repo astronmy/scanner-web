@@ -8,7 +8,7 @@
     <div class="py-12">
         @foreach($events as $event)
         <div class="p-3 text-gray-900 dark:text-gray-100 flex items-center justify-center min-h-[60vh]">
-            <form method="POST" action="{{ route('dashboard.event', $event->id) }}"
+            <form method="GET" action="{{ route('dashboard.event', $event->id) }}"
                 class="w-full max-w-xs aspect-square">
                 @csrf
 

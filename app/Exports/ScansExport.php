@@ -20,6 +20,10 @@ class ScansExport implements FromQuery, WithHeadings, WithMapping
     {
         $query = Scan::query()->with('user');
 
+        if (session()->has('currentEvent')) {
+            $query->where('event_id', session('currentEvent'));
+        }
+
         if (!empty($this->filters['value'])) {
             $query->where('value', 'like', '%' . $this->filters['value'] . '%');
         }

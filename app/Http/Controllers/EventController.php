@@ -16,7 +16,7 @@ class EventController extends Controller
         if ($user->isAdmin()) {
             $query = Event::query();
         } else {
-            $query = $user->events()->getQuery(); // importante: getQuery() para seguir armando filtros
+            $query = $user->events()->getQuery();
         }
 
         if ($request->filled('name')) {

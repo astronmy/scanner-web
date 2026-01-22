@@ -15,7 +15,7 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::post('/dashboard/{event_id}', [DashboardController::class, 'selectEvent'])->name('dashboard.event');
+    Route::get('/dashboard/{event_id}/scan', [DashboardController::class, 'selectEvent'])->name('dashboard.event');
 
     Route::prefix('assignments')
         ->name('assignments.')

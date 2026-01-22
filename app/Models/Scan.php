@@ -15,6 +15,7 @@ class Scan extends Model
         'user_id',
         'value',
         'scanned_at',
+        'event_id'
     ];
 
     protected $casts = [

@@ -14,6 +14,10 @@ class ScanController extends Controller
     {
         $query = Scan::query()->with('user');
 
+        if (session()->has('currentEvent')) {
+            $query->where('event_id', session('currentEvent'));
+        }
+        
         if ($request->filled('value')) {
             $query->where('value', 'like', '%' . $request->value . '%');
         }
