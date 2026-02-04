@@ -14,7 +14,7 @@
             object-fit: cover !important;
         }
 
-        #qr-reader > div {
+        #qr-reader>div {
             width: 100% !important;
             height: 100% !important;
         }
@@ -34,12 +34,12 @@
                                 </div>
 
                                 <p id="qr-status"
-                                   class="mt-4 text-sm text-gray-700 dark:text-gray-200 text-center">
+                                    class="mt-4 text-sm text-gray-700 dark:text-gray-200 text-center">
                                     Apuntá la cámara al código QR
                                 </p>
 
                                 <p id="qr-result"
-                                   class="mt-5 text-xl font-semibold
+                                    class="mt-5 text-xl font-semibold
                                           text-gray-800 dark:text-gray-100
                                           bg-gray-100 dark:bg-gray-800
                                           px-4 py-2 rounded-lg
@@ -70,7 +70,7 @@
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const qrRegionId = "qr-reader";
             const html5QrCode = new Html5Qrcode(qrRegionId);
 
@@ -99,8 +99,9 @@
                         return;
                     }
 
-                    html5QrCode.start(
-                        { facingMode: "environment" },
+                    html5QrCode.start({
+                            facingMode: "environment"
+                        },
                         config,
                         onScanSuccess,
                         () => {}
@@ -138,7 +139,6 @@
         });
     </script>
 
-    {{-- Contador --}}
     <div class="fixed bottom-6 right-6">
         <div
             class="w-16 h-16 rounded-full bg-emerald-600 text-white
@@ -149,4 +149,32 @@
             {{ $userScans ?? 0 }}/{{ $scans ?? 0 }}/{{ $total ?? 0 }}
         </div>
     </div>
+
+    <div class="fixed top-6 left-6 z-50">
+        <button
+            id="btn-back"
+            type="button"
+            class="w-14 h-14
+               rounded-full
+               bg-violet-600 hover:bg-violet-700
+               text-white
+               flex items-center justify-center
+               shadow-xl
+               active:scale-95 transition
+               focus:outline-none focus:ring-2 focus:ring-offset-2
+               focus:ring-violet-500">
+
+            <svg xmlns="http://www.w3.org/2000/svg"
+                class="w-6 h-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2">
+                <path stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 19l-7-7 7-7" />
+            </svg>
+        </button>
+    </div>
+
 </x-app-layout>
