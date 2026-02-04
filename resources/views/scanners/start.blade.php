@@ -8,13 +8,13 @@
     <style>
         #qr-reader video,
         #qr-reader canvas,
-            #qr-reader img {
+        #qr-reader img {
             width: 100% !important;
             height: 100% !important;
             object-fit: cover !important;
         }
 
-        #qr-reader > div {
+        #qr-reader>div {
             width: 100% !important;
             height: 100% !important;
         }
@@ -34,12 +34,12 @@
                                 </div>
 
                                 <p id="qr-status"
-                                   class="mt-4 text-sm text-gray-700 dark:text-gray-200 text-center">
+                                    class="mt-4 text-sm text-gray-700 dark:text-gray-200 text-center">
                                     Apuntá la cámara al código QR
                                 </p>
 
                                 <p id="qr-result"
-                                   class="mt-5 text-xl font-semibold
+                                    class="mt-5 text-xl font-semibold
                                           text-gray-800 dark:text-gray-100
                                           bg-gray-100 dark:bg-gray-800
                                           px-4 py-2 rounded-lg
@@ -70,7 +70,7 @@
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const qrRegionId = "qr-reader";
             const html5QrCode = new Html5Qrcode(qrRegionId);
 
@@ -99,8 +99,9 @@
                         return;
                     }
 
-                    html5QrCode.start(
-                        { facingMode: "environment" },
+                    html5QrCode.start({
+                            facingMode: "environment"
+                        },
                         config,
                         onScanSuccess,
                         () => {}
@@ -140,22 +141,27 @@
 
     <div class="fixed bottom-6 right-6">
         <div
-            class="w-16 h-16 rounded-full bg-emerald-600 text-white
-                   flex items-center justify-center
-                   text-lg font-bold shadow-xl
-                   border-2 border-white dark:border-gray-800
-                   select-none">
+            class="w-16 h-16 rounded-full
+               bg-red-600 text-white
+               flex items-center justify-center
+               text-lg font-bold shadow-xl
+               border-2 border-white dark:border-gray-800
+               select-none">
             {{ $userScans ?? 0 }}
         </div>
     </div>
 
     <div class="fixed bottom-6 left-6 z-50">
         <div
-            class="w-16 h-16 rounded-full bg-emerald-600 text-white
-                    flex items-center justify-center
-                    text-lg font-bold shadow-xl
-                    border-2 border-white dark:border-gray-800
-                    select-none">
+            class="min-w-[90px] h-14
+               px-4
+               rounded-xl
+               bg-emerald-600 text-white
+               flex items-center justify-center
+               text-base font-bold
+               shadow-xl
+               border-2 border-white dark:border-gray-800
+               select-none">
             {{ $scans ?? 0 }}/{{ $total ?? 0 }}
         </div>
     </div>
