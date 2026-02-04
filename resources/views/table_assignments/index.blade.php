@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Ubicaciones de Mesa - {{ session('currentEventName') ?? ''}}
+            Listado  - {{ session('currentEventName') ?? ''}}
         </h2>
     </x-slot>
 
@@ -13,7 +13,7 @@
                     {{-- Título + botón (ya no hace falta título grande acá porque está en el header, pero si querés lo podés dejar) --}}
                     <div class="flex items-center justify-between mb-6">
                         <h1 class="text-lg font-semibold text-gray-800 dark:text-gray-100">
-                            Ubicaciones de Mesa
+                            Listado 
                         </h1>
 
                         {{-- Botón para importar --}}
@@ -136,7 +136,7 @@
                                     @empty
                                     <tr>
                                         <td colspan="5" class="px-6 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
-                                            No se encontraron ubicaciones de mesa.
+                                            No se encontraron Listado .
                                         </td>
                                     </tr>
                                     @endforelse

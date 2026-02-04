@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Importar Ubicaciones
+            Importar Listado
         </h2>
     </x-slot>
 
@@ -11,7 +11,7 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
 
                     <h1 class="text-2xl font-semibold mb-6">
-                        Importar Ubicaciones
+                        Importar Listado
                     </h1>
 
                     <form action="{{ route('assignments.import') }}"

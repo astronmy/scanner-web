@@ -11,7 +11,7 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
 
                     <h1 class="text-2xl font-semibold mb-6">
-                        Editar Ubicación de Mesa
+                        Editar Ubicación 
                     </h1>
 
                     <form action="{{ route('assignments.update', $assignment) }}"

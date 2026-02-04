@@ -17,7 +17,7 @@
                     </x-nav-link>
                     @if (session()->has('currentEvent') || auth()->user()?->isAdmin())
                         <x-nav-link :href="route('assignments.index')" :active="request()->routeIs('assignments.index')">
-                            {{ __('Ubicaciones') }}
+                            {{ __('Listado') }}
                         </x-nav-link>
                         <x-nav-link :href="route('scans.index')" :active="request()->routeIs('scans.index')">
                             {{ __('Escaneos') }}
@@ -89,7 +89,7 @@
             </x-responsive-nav-link>
             @if (session()->has('currentEvent') || auth()->user()->isAdmin())
                 <x-responsive-nav-link :href="route('assignments.index')" :active="request()->routeIs('assignments.index')">
-                    {{ __('Ubicaciones') }}
+                    {{ __('Listado') }}
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('scans.index')" :active="request()->routeIs('scans.index')">
                     {{ __('Escaneos') }}
