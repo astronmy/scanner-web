@@ -21,10 +21,10 @@
                         @csrf
                         @method('PUT')
 
-                        {{-- Nro Mesa --}}
+                        {{-- Ubicación --}}
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
-                                Nro Mesa
+                                Ubicación
                             </label>
                             <input type="number" name="table_number"
                                    value="{{ old('table_number', $assignment->table_number) }}"
