@@ -37,6 +37,25 @@
                             @enderror
                         </div>
 
+                        {{-- Label --}}
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                                Etiqueta
+                            </label>
+                            <input
+                                type="text"
+                                name="label"
+                                id="label"
+                                value="{{ old('label', $event->label) }}"
+                                class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600
+                                       bg-white dark:bg-gray-900
+                                       text-gray-900 dark:text-gray-100
+                                       shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                            @error('label')
+                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         {{-- Desde --}}
                         <div>
                             <label for="start_date" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
