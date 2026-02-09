@@ -66,6 +66,7 @@ class ScannerController extends Controller
         if(! $alreadyScan) {
             Scan::create([
                 'user_id'    => $request->user()->id,
+                'event_id'   => session('currentEvent'),
                 'value'      => $request->value,     
                 'scanned_at' => now(),
             ]);
