@@ -123,7 +123,7 @@
                             userTotals.textContent = data.user_scans;
                         }
                         if(generalTotals) {
-                            let counter = data.scans+'/'+data.totals;
+                            let counter = data.scans+'/'+data.total;
                             generalTotals.textContent = counter;
                         }
 

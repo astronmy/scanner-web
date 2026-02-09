@@ -9,7 +9,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-6">
                 @foreach($events as $event)
                     <form method="GET"
-                          action="{{ route('dashboard.event', $event->event_id) }}"
+                          action="{{ route('dashboard.event', $event->event_id ?? $event->id) }}"
                           class="w-full">
 
                         <button type="submit"
