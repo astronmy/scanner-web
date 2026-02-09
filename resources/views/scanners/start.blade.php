@@ -80,7 +80,7 @@
             const userTotals = document.getElementById('userTotals');
             const generalTotals = document.getElementById('generalTotals');
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
+            const label = document.getElementById('label').value;
             let isScanning = false;
 
             async function sendScan(decodedText) {
@@ -113,7 +113,7 @@
 
                     if (data && data.location && data.name) {
                         let control = data.exists == 1 ? 'La persona ya ingreso previamente' : '';
-                        let message = `<center>${data.name}<br>Mesa: <br>${data.location}</center>
+                        let message = `<center>${data.name}<br>${label}: <br>${data.location}</center>
                         ${control}`;
 
                         result.innerHTML = message;
