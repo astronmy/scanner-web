@@ -16,7 +16,7 @@ class ScannerController extends Controller
             $scansQuery->where('event_id', session('currentEvent'));
         }
 
-        $scans = $scansQuery->all()->count();
+        $scans = $scansQuery->count();
 
         $userScansQuery = Scan::query();
 
@@ -32,7 +32,7 @@ class ScannerController extends Controller
             $query->where('event_id', session('currentEvent'));
         }
 
-        $total = $query->all()->count();
+        $total = $query->count();
 
         $event = Event::findOFail(session('currentEvent'));
         $label = $event->label;
@@ -71,8 +71,8 @@ class ScannerController extends Controller
             ]);
         }
 
-        $scans = Scan::where('event_id', session('currentEvent'))->all()->count();
-        $total = TableAssignment::where('event_id', session('currentEvent'))->all()->count();
+        $scans = Scan::where('event_id', session('currentEvent'))->count();
+        $total = TableAssignment::where('event_id', session('currentEvent'))->count();
         $userScans = Scan::where('event_id', session('currentEvent'))->where('user_id', $request->user()->id)->count();
 
         return response()->json([
