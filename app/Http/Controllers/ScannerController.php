@@ -34,7 +34,7 @@ class ScannerController extends Controller
 
         $total = $query->count();
 
-        $event = Event::findOFail(session('currentEvent'));
+        $event = Event::findOrFail(session('currentEvent'));
         $label = $event->label;
 
         return view('scanners.start', compact('total', 'scans', 'userScans', 'label'));
