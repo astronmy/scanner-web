@@ -77,9 +77,69 @@
             const status = document.getElementById('qr-status');
             const result = document.getElementById('qr-result');
             const btnNew = document.getElementById('btn-new');
+            const userTotals = document.getElementById('userTotals');
+            const generalTotals = document.getElementById('generalTotals');
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
             let isScanning = false;
+
+            async function sendScan(decodedText) {
+                try {
+                    result.textContent = 'Código detectado, procesando...';
+                    result.classList.remove(
+                        'text-gray-700', 'dark:text-gray-200',
+                        'text-red-600', 'dark:text-red-400',
+                        'text-emerald-600', 'dark:text-emerald-400'
+                    );
+                    result.classList.add('text-emerald-600', 'dark:text-emerald-400');
+
+                    const response = await fetch("{{ route('scanners.storage') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                        },
+                        body: JSON.stringify({
+                            value: decodedText,
+                        }),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Error HTTP: ' + response.status);
+                    }
+
+                    const data = await response.json().catch(() => ({}));
+
+                    if (data && data.location && data.name) {
+                        let control = data.exists == 1 ? 'La persona ya ingreso previamente' : '';
+                        let message = `<center>${data.name}<br>Mesa: <br>${data.location}</center><br><br>
+                        ${control}`;
+
+                        result.innerHTML = message;
+                        status.textContent = '';
+
+                        if (userTotals) {
+                            userTotals.textContent = data.user_scans;
+                        }
+                        if(generalTotals) {
+                            let counter = data.scans+'/'+data.totals;
+                            generalTotals.textContent = counter;
+                        }
+
+                    } else if (data && data.message) {
+                        result.textContent = data.message;
+                    } else {
+                        result.textContent = 'No se encuentra el registro';
+                    }
+
+                } catch (error) {
+                    console.error('Error en el envío AJAX', error);
+                    result.textContent = 'Ocurrió un error al procesar el código.';
+                    result.classList.remove('text-emerald-600', 'dark:text-emerald-400');
+                    result.classList.add('text-red-600', 'dark:text-red-400');
+                }
+            }
 
             function startScanner() {
                 const el = document.getElementById('qr-reader');
@@ -140,7 +200,7 @@
     </script>
 
     <div class="fixed bottom-6 right-6">
-        <div
+        <div id="userTotals"
             class="w-16 h-16 rounded-full
                bg-red-600 text-white
                flex items-center justify-center
@@ -152,7 +212,7 @@
     </div>
 
     <div class="fixed bottom-6 left-6 z-50">
-        <div
+        <div id="generalTotals"
             class="min-w-[90px] h-14
                px-4
                rounded-xl
