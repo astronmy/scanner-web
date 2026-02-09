@@ -113,7 +113,7 @@
 
                     if (data && data.location && data.name) {
                         let control = data.exists == 1 ? 'La persona ya ingreso previamente' : '';
-                        let message = `<center>${data.name}<br>Mesa: <br>${data.location}</center><br><br>
+                        let message = `<center>${data.name}<br>Mesa: <br>${data.location}</center>
                         ${control}`;
 
                         result.innerHTML = message;

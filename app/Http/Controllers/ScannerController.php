@@ -9,13 +9,41 @@ use Illuminate\Http\Request;
 class ScannerController extends Controller
 {
     public function start(Request $request) {
-        $scans = Scan::all()->count();
-        $userScans = Scan::where('user_id', $request->user()->id)->count();
-        $total = TableAssignment::all()->count();
+        $scansQuery = Scan::query();
+       
+        if (session()->has('currentEvent')) {
+            $scansQuery->where('event_id', session('currentEvent'));
+        }
+
+        $scans = $scansQuery->all()->count();
+
+        $userScansQuery = Scan::query();
+
+        if (session()->has('currentEvent')) {
+            $userScansQuery->where('event_id', session('currentEvent'));
+        }
+
+        $userScans = $userScansQuery->where('user_id', $request->user()->id)->count();
+
+        $query = TableAssignment::query();
+
+        if (session()->has('currentEvent')) {
+            $query->where('event_id', session('currentEvent'));
+        }
+
+        $total = $query->all()->count();
+
         return view('scanners.start', compact('total', 'scans', 'userScans'));
     }
     public function storage(Request $request) {
-        $search = TableAssignment::where('guest_name', $request->value)->first();
+
+        $query = TableAssignment::query();
+
+        if (session()->has('currentEvent')) {
+            $query->where('event_id', session('currentEvent'));
+        }
+
+        $search = $query->where('guest_name', $request->value)->first();
 
         if(!$search) {
             return response()->json([
@@ -23,7 +51,13 @@ class ScannerController extends Controller
             ]);
         }
 
-        $alreadyScan = Scan::where('value', $search->guest_name)->exists();
+        $checkQry = Scan::query();
+
+        if (session()->has('currentEvent')) {
+            $checkQry->where('event_id', session('currentEvent'));
+        }
+
+        $alreadyScan = $checkQry->where('value', $search->guest_name)->exists();
 
         if(! $alreadyScan) {
             Scan::create([
@@ -33,9 +67,9 @@ class ScannerController extends Controller
             ]);
         }
 
-        $scans = Scan::all()->count();
-        $total = TableAssignment::all()->count();
-        $userScans = Scan::where('user_id', $request->user()->id)->count();
+        $scans = Scan::where('event_id', session('currentEvent'))->all()->count();
+        $total = TableAssignment::where('event_id', session('currentEvent'))->all()->count();
+        $userScans = Scan::where('event_id', session('currentEvent'))->where('user_id', $request->user()->id)->count();
 
         return response()->json([
                 'location' => $search->table_number,
