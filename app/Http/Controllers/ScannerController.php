@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Event;
 use App\Models\Scan;
 use App\Models\TableAssignment;
 use Illuminate\Http\Request;
@@ -33,7 +34,10 @@ class ScannerController extends Controller
 
         $total = $query->all()->count();
 
-        return view('scanners.start', compact('total', 'scans', 'userScans'));
+        $event = Event::findOFail(session('currentEvent'));
+        $label = $event->label;
+
+        return view('scanners.start', compact('total', 'scans', 'userScans', 'label'));
     }
     public function storage(Request $request) {
 
