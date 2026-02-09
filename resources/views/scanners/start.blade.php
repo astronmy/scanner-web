@@ -181,6 +181,7 @@
                     isScanning = false;
                     result.textContent = decodedText;
                     status.textContent = '';
+                    sendScan(decodedText);
                 });
             }
 
