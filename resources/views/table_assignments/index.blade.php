@@ -34,7 +34,7 @@
                                     Ubicación
                                 </label>
                                 <input
-                                    type="number"
+                                    type="text"
                                     name="table_number"
                                     id="table_number"
                                     value="{{ request('table_number') }}"

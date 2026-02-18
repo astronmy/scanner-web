@@ -57,7 +57,7 @@ class TableAssignmentController extends Controller
     public function update(Request $request, TableAssignment $assignment)
     {
         $request->validate([
-            'table_number' => ['required', 'integer', 'min:1'],
+            'table_number' => ['required', 'string', 'max:50'],
             'guest_name'   => ['required', 'string', 'max:255'],
         ]);
 

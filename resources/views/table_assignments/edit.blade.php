@@ -26,7 +26,7 @@
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
                                 Ubicación
                             </label>
-                            <input type="number" name="table_number"
+                            <input type="text" name="table_number"
                                    value="{{ old('table_number', $assignment->table_number) }}"
                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm
                                           focus:border-indigo-500 focus:ring-indigo-500 text-sm">
