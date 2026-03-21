@@ -37,8 +37,9 @@ class ScannerController extends Controller
         $event = Event::findOrFail(session('currentEvent'));
         $label = $event->label;
         $newButtonEnabled = (bool) $event->new_button_enabled;
+        $messageNotFound = $event->message_not_found ?: 'La persona ya ingresó previamente';
 
-        return view('scanners.start', compact('total', 'scans', 'userScans', 'label', 'newButtonEnabled'));
+        return view('scanners.start', compact('total', 'scans', 'userScans', 'label', 'newButtonEnabled', 'messageNotFound'));
     }
     public function storage(Request $request) {
 

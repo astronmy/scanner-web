@@ -15,6 +15,7 @@ class Event extends Model
         'label',
         'end_date',
         'new_button_enabled',
+        'message_not_found',
     ];
 
     protected $casts = [

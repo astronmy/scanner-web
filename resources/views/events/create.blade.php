@@ -76,9 +76,26 @@
 
                         <div class="pt-2 border-t border-gray-200 dark:border-gray-700">
                             <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-100 mb-3">Preferencias Escaner</h3>
+                            <div class="mb-3">
+                                <label for="message_not_found" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                                    Mensaje para "ya ingresó previamente"
+                                </label>
+                                <input
+                                    type="text"
+                                    name="message_not_found"
+                                    id="message_not_found"
+                                    value="{{ old('message_not_found', 'La persona ya ingresó previamente') }}"
+                                    class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600
+                                           bg-white dark:bg-gray-900
+                                           text-gray-900 dark:text-gray-100
+                                           shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                                @error('message_not_found')
+                                    <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
                             <div class="flex items-center justify-between rounded-lg border border-gray-200 dark:border-gray-700 p-3">
                                 <div>
-                                    <p class="text-sm font-medium text-gray-800 dark:text-gray-100">Mostrar botón "Nuevo" en Escáner Start</p>
+                                    <p class="text-sm font-medium text-gray-800 dark:text-gray-100">Mostrar botón "Nuevo" Escáner</p>
                                     <p class="text-xs text-gray-500 dark:text-gray-400">Si está desactivado, no se mostrará la opción "Nuevo".</p>
                                 </div>
                                 <label class="relative inline-flex items-center cursor-pointer">
