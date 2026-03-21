@@ -20,6 +20,7 @@ class UpdateEventRequest extends FormRequest
             'end_date'   => ['required', 'date', 'after_or_equal:start_date'],
             'new_button_enabled' => ['required', 'boolean'],
             'message_not_found' => ['nullable', 'string', 'max:255'],
+            'scan_type' => ['required', 'integer', 'in:1,2'],
         ];
     }
 
@@ -27,6 +28,7 @@ class UpdateEventRequest extends FormRequest
     {
         $this->merge([
             'new_button_enabled' => $this->boolean('new_button_enabled'),
+            'scan_type' => (int) ($this->input('scan_type', 1)),
         ]);
     }
 
@@ -39,6 +41,7 @@ class UpdateEventRequest extends FormRequest
             'end_date'   => 'fecha hasta',
             'new_button_enabled' => 'mostrar botón nuevo en escáner',
             'message_not_found' => 'mensaje de escáner',
+            'scan_type' => 'tipo de escaneo',
         ];
     }
 }

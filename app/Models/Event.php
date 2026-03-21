@@ -16,12 +16,14 @@ class Event extends Model
         'end_date',
         'new_button_enabled',
         'message_not_found',
+        'scan_type',
     ];
 
     protected $casts = [
         'start_date' => 'date',
         'end_date'   => 'date',
         'new_button_enabled' => 'boolean',
+        'scan_type' => 'integer',
     ];
 
     public function users()

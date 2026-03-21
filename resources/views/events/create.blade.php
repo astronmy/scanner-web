@@ -93,6 +93,24 @@
                                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
+                            <div class="mb-3">
+                                <label for="scan_type" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                                    Tipo de escaneo
+                                </label>
+                                <select
+                                    name="scan_type"
+                                    id="scan_type"
+                                    class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600
+                                           bg-white dark:bg-gray-900
+                                           text-gray-900 dark:text-gray-100
+                                           shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                                    <option value="1" @selected((string) old('scan_type', '1') === '1')>CHECK IN</option>
+                                    <option value="2" @selected((string) old('scan_type', '1') === '2')>STORAGE</option>
+                                </select>
+                                @error('scan_type')
+                                    <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
                             <div class="flex items-center justify-between rounded-lg border border-gray-200 dark:border-gray-700 p-3">
                                 <div>
                                     <p class="text-sm font-medium text-gray-800 dark:text-gray-100">Mostrar botón "Nuevo" Escáner</p>
