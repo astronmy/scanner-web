@@ -192,7 +192,7 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit"
-                                                        class="px-3 py-1 text-xs font-semibold rounded-md
+                                                        class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-md
                                                                bg-red-600 text-white hover:bg-red-700
                                                                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                                                         <svg class="mr-1 inline h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
