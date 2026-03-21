@@ -14,11 +14,13 @@ class Event extends Model
         'start_date',
         'label',
         'end_date',
+        'new_button_enabled',
     ];
 
     protected $casts = [
         'start_date' => 'date',
         'end_date'   => 'date',
+        'new_button_enabled' => 'boolean',
     ];
 
     public function users()

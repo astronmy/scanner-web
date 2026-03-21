@@ -35,7 +35,7 @@
 
                                 <p id="qr-status"
                                     class="mt-4 text-sm text-gray-700 dark:text-gray-200 text-center">
-                                    Apunt? la c?mara al c?digo QR
+                                    Apunt&aacute; la c&aacute;mara al c&oacute;digo QR
                                 </p>
 
                                 <p id="qr-result"
@@ -49,21 +49,23 @@
                         </div>
                     </div>
 
-                    <div class="mt-10 flex justify-center">
-                        <button
-                            id="btn-new"
-                            class="inline-flex items-center px-10 py-3 text-lg font-bold
-                                   rounded-xl bg-violet-600 text-white
-                                   hover:bg-violet-700
-                                   focus:outline-none focus:ring-2 focus:ring-offset-2
-                                   focus:ring-violet-500
-                                   shadow-lg active:scale-95 transition">
-                            <svg class="mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                            </svg>
-                            Nuevo
-                        </button>
-                    </div>
+                    @if($newButtonEnabled ?? true)
+                        <div class="mt-10 flex justify-center">
+                            <button
+                                id="btn-new"
+                                class="inline-flex items-center px-10 py-3 text-lg font-bold
+                                       rounded-xl bg-violet-600 text-white
+                                       hover:bg-violet-700
+                                       focus:outline-none focus:ring-2 focus:ring-offset-2
+                                       focus:ring-violet-500
+                                       shadow-lg active:scale-95 transition">
+                                <svg class="mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                </svg>
+                                Nuevo
+                            </button>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -88,7 +90,7 @@
 
             async function sendScan(decodedText) {
                 try {
-                    result.textContent = 'C?digo detectado, procesando...';
+                    result.textContent = 'C\u00f3digo detectado, procesando...';
                     result.classList.remove(
                         'text-gray-700', 'dark:text-gray-200',
                         'text-red-600', 'dark:text-red-400',
@@ -116,7 +118,7 @@
 
                     if (data && data.location && data.name) {
                         let control = data.exists == 1
-                            ? '<div class="mt-2 text-red-600 dark:text-red-400 font-semibold">La persona ya ingres? previamente</div>'
+                            ? '<div class="mt-2 text-red-600 dark:text-red-400 font-semibold">La persona ya ingres\u00f3 previamente</div>'
                             : '';
                         let message = `<center>${data.name}<br>${label}: <br>${data.location}</center>${control}`;
 
@@ -140,8 +142,8 @@
                     }
 
                 } catch (error) {
-                    console.error('Error en el env?o AJAX', error);
-                    result.textContent = 'Ocurri? un error al procesar el c?digo.';
+                    console.error('Error en el env\u00edo AJAX', error);
+                    result.textContent = 'Ocurri\u00f3 un error al procesar el c\u00f3digo.';
                     result.classList.remove('text-emerald-600', 'dark:text-emerald-400');
                     result.classList.add('text-red-600', 'dark:text-red-400');
                 }
@@ -161,7 +163,7 @@
 
                 Html5Qrcode.getCameras().then(cameras => {
                     if (!cameras.length) {
-                        result.textContent = 'No se encontr? ninguna c?mara.';
+                        result.textContent = 'No se encontr\u00f3 ninguna c\u00e1mara.';
                         return;
                     }
 
@@ -175,7 +177,7 @@
                         isScanning = true;
                     }).catch(err => {
                         console.error(err);
-                        result.textContent = 'No se pudo iniciar la c?mara.';
+                        result.textContent = 'No se pudo iniciar la c\u00e1mara.';
                     });
                 });
             }
@@ -191,16 +193,18 @@
                 });
             }
 
-            btnNew.addEventListener('click', () => {
-                result.textContent = '';
-                status.textContent = 'Apunt? la c?mara al c?digo QR';
+            if (btnNew) {
+                btnNew.addEventListener('click', () => {
+                    result.textContent = '';
+                    status.textContent = 'Apunt\u00e1 la c\u00e1mara al c\u00f3digo QR';
 
-                if (isScanning) {
-                    html5QrCode.stop().finally(startScanner);
-                } else {
-                    startScanner();
-                }
-            });
+                    if (isScanning) {
+                        html5QrCode.stop().finally(startScanner);
+                    } else {
+                        startScanner();
+                    }
+                });
+            }
 
             startScanner();
         });

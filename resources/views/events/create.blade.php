@@ -74,6 +74,29 @@
                             @enderror
                         </div>
 
+                        <div class="pt-2 border-t border-gray-200 dark:border-gray-700">
+                            <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-100 mb-3">Preferencias Escaner</h3>
+                            <div class="flex items-center justify-between rounded-lg border border-gray-200 dark:border-gray-700 p-3">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-800 dark:text-gray-100">Mostrar botón "Nuevo" en Escáner Start</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Si está desactivado, no se mostrará la opción "Nuevo".</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="hidden" name="new_button_enabled" value="0">
+                                    <input type="checkbox"
+                                           name="new_button_enabled"
+                                           value="1"
+                                           class="sr-only peer"
+                                           @checked(old('new_button_enabled', 1))>
+                                    <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-500 dark:peer-focus:ring-indigo-400 rounded-full peer dark:bg-gray-600 peer-checked:bg-emerald-600 transition-colors"></div>
+                                    <div class="absolute left-0.5 top-0.5 h-5 w-5 bg-white rounded-full transition-transform peer-checked:translate-x-5"></div>
+                                </label>
+                            </div>
+                            @error('new_button_enabled')
+                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         <div class="flex justify-end gap-2 pt-2">
                             <a href="{{ route('events.index') }}"
                                class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium

@@ -18,7 +18,15 @@ class UpdateEventRequest extends FormRequest
             'label'       => ['nullable', 'string', 'max:100'],
             'start_date' => ['required', 'date'],
             'end_date'   => ['required', 'date', 'after_or_equal:start_date'],
+            'new_button_enabled' => ['required', 'boolean'],
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'new_button_enabled' => $this->boolean('new_button_enabled'),
+        ]);
     }
 
     public function attributes(): array
@@ -28,6 +36,7 @@ class UpdateEventRequest extends FormRequest
             'label'       => 'etiqueta',
             'start_date' => 'fecha desde',
             'end_date'   => 'fecha hasta',
+            'new_button_enabled' => 'mostrar botón nuevo en escáner',
         ];
     }
 }
