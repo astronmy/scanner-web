@@ -143,6 +143,15 @@
                                                 </svg>
                                                 Editar
                                             </a>
+                                            <button type="button"
+                                                class="delete-assignment-btn inline-flex items-center px-2 py-1 border border-transparent text-xs rounded-md bg-red-600 text-white hover:bg-red-700"
+                                                data-delete-url="{{ route('assignments.destroy', $assignment) }}"
+                                                title="Eliminar registro">
+                                                <svg class="mr-1 h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 7.5h12m-1.5 0-.663 10.608A2.25 2.25 0 0113.59 20.25h-3.18a2.25 2.25 0 01-2.247-2.142L7.5 7.5m3-3h3a1.5 1.5 0 011.5 1.5v1.5h-6V6a1.5 1.5 0 011.5-1.5z" />
+                                                </svg>
+                                                Eliminar
+                                            </button>
                                         </td>
                                     </tr>
                                     @empty
@@ -166,4 +175,40 @@
             </div>
         </div>
     </div>
+
+    <x-modal name="confirm-delete-assignment" :show="false" maxWidth="md">
+        <div class="p-6 sm:p-8">
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Eliminar registro del listado</h3>
+            <p class="text-base font-normal text-gray-600 dark:text-gray-400 mb-8">
+                ¿Está seguro que desea eliminar este registro? Esta acción no se puede deshacer.
+            </p>
+            <form id="delete-assignment-form" method="POST" action="">
+                @csrf
+                @method('DELETE')
+                <div class="flex justify-end gap-3">
+                    <button type="button"
+                        class="inline-flex items-center px-5 py-2.5 text-base font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400"
+                        x-on:click="$dispatch('close-modal', 'confirm-delete-assignment')">
+                        Cancelar
+                    </button>
+                    <button type="submit"
+                        class="inline-flex items-center px-5 py-2.5 text-base font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                        Eliminar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </x-modal>
+
+    <script>
+        document.querySelectorAll('.delete-assignment-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var url = this.getAttribute('data-delete-url');
+                if (url) {
+                    document.getElementById('delete-assignment-form').action = url;
+                    window.dispatchEvent(new CustomEvent('open-modal', { detail: 'confirm-delete-assignment' }));
+                }
+            });
+        });
+    </script>
 </x-app-layout>
