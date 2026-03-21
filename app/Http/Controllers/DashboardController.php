@@ -51,5 +51,20 @@ class DashboardController extends Controller
         return view('menu');
     }
 
+    public function selectEventAndScan(Request $request, int $eventId)
+    {
+        $event = Event::findOrFail($eventId);
+        $user = $request->user();
+
+        if (! $user->hasEvent($eventId) && ! $user->isAdmin()) {
+            abort(404);
+        }
+
+        $request->session()->put('currentEvent', $event->id);
+        $request->session()->put('currentEventName', $event->name);
+
+        return redirect()->route('scanners.start');
+    }
+
    
 }
