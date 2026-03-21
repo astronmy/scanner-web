@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TableAssignmentsTemplateExport;
 use App\Http\Requests\ImportTableAssignmentRequest;
 use App\Imports\TableAssignmentImport;
 use App\Models\TableAssignment;
@@ -47,6 +48,12 @@ class TableAssignmentController extends Controller
     public function importForm()
     {
         return view('table_assignments.import');
+    }
+
+    public function downloadTemplate()
+    {
+        $fileName = 'modelo_importacion_listado.xlsx';
+        return Excel::download(new TableAssignmentsTemplateExport(), $fileName);
     }
 
     public function edit(TableAssignment $assignment)

@@ -48,6 +48,13 @@
                                 </svg>
                                 Volver al dashboard
                             </a>
+                            <a href="{{ route('events.export-scans-by-event') }}"
+                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md bg-violet-600 text-white hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
+                                <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0 4-4m-4 4-4-4M4.5 15.75v1.5A2.25 2.25 0 006.75 19.5h10.5a2.25 2.25 0 002.25-2.25v-1.5" />
+                                </svg>
+                                Exportar general
+                            </a>
                             <a href="{{ route('events.create') }}"
                                 class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md
                                       bg-emerald-600 text-white hover:bg-emerald-700
@@ -152,6 +159,9 @@
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider w-40">
                                             Hasta
                                         </th>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider w-40">
+                                            Scan Type
+                                        </th>
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider text-right w-32">
                                             Acciones
                                         </th>
@@ -171,6 +181,17 @@
                                         </td>
                                         <td class="px-6 py-3 whitespace-nowrap text-gray-700 dark:text-gray-200 text-xs">
                                             {{ $event->end_date?->format('d/m/Y') }}
+                                        </td>
+                                        <td class="px-6 py-3 whitespace-nowrap">
+                                            @if((int) ($event->scan_type ?? 1) === 2)
+                                                <span class="inline-flex px-2 py-0.5 text-xs font-medium rounded bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200">
+                                                    STORAGE
+                                                </span>
+                                            @else
+                                                <span class="inline-flex px-2 py-0.5 text-xs font-medium rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200">
+                                                    CHECK IN
+                                                </span>
+                                            @endif
                                         </td>
                                         <td class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium space-x-2">
                                             <a href="{{ route('events.edit', $event) }}"
@@ -203,7 +224,7 @@
                                     </tr>
                                     @empty
                                     <tr>
-                                        <td colspan="5" class="px-6 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
+                                        <td colspan="6" class="px-6 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
                                             No se encontraron eventos.
                                         </td>
                                     </tr>

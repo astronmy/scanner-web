@@ -14,6 +14,21 @@
                         Importar Listado
                     </h1>
 
+                    <div class="mb-4">
+                        <a href="{{ route('assignments.template') }}"
+                           class="inline-flex items-center px-4 py-2 border border-transparent
+                                  text-sm font-medium rounded-md bg-emerald-600 text-white
+                                  hover:bg-emerald-700">
+                            <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0 4-4m-4 4-4-4M4.5 15.75v1.5A2.25 2.25 0 006.75 19.5h10.5a2.25 2.25 0 002.25-2.25v-1.5" />
+                            </svg>
+                            Descargar modelo Excel
+                        </a>
+                        <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                            Encabezados esperados: <code>mesa</code>, <code>nombre</code>, <code>observaciones</code>.
+                        </p>
+                    </div>
+
                     <form action="{{ route('assignments.import') }}"
                           method="POST"
                           enctype="multipart/form-data"

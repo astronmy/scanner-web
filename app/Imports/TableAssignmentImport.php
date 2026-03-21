@@ -19,10 +19,12 @@ class TableAssignmentImport implements ToModel, WithHeadingRow
         }
 
         $eventId =  session('currentEvent') ?? null;
+        $observations = $row['observaciones'] ?? $row['observations'] ?? null;
 
         return new TableAssignment([
             'table_number' => $row['mesa'],
             'guest_name'   => $row['nombre'],
+            'observations' => $observations ?: null,
             'event_id' => $eventId
         ]);
     }

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\EventScansByEventExport;
 use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Models\Event;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class EventController extends Controller
 {
@@ -41,6 +43,23 @@ class EventController extends Controller
     public function create()
     {
         return view('events.create');
+    }
+
+    public function exportScansByEvent(Request $request)
+    {
+        $user = $request->user();
+        $events = $user->isAdmin()
+            ? Event::query()->orderBy('start_date')->get()
+            : $user->events()->orderBy('start_date')->get();
+
+        if ($events->isEmpty()) {
+            return redirect()
+                ->route('events.index')
+                ->with('error', 'No hay eventos para exportar.');
+        }
+
+        $fileName = 'scans_por_evento_' . now()->format('Ymd_His') . '.xlsx';
+        return Excel::download(new EventScansByEventExport($events), $fileName);
     }
 
     public function store(StoreEventRequest $request)

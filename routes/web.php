@@ -24,6 +24,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->group(function () {
             Route::get('/', 'index')->name('index');                
             Route::get('/form', 'importForm')->name('import-form'); 
+            Route::get('/template', 'downloadTemplate')->name('template');
             Route::post('/import', 'import')->name('import');       
 
             Route::get('/{assignment}/edit', 'edit')->name('edit');
@@ -50,6 +51,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     ->name('destroy');      
     });
 
+     Route::get('/events/export/scans-by-event', [EventController::class, 'exportScansByEvent'])->name('events.export-scans-by-event');
      Route::resource('events', EventController::class)->except(['show']);
      Route::resource('users', UserController::class)->except(['show']);
 });

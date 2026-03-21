@@ -14,6 +14,7 @@ class TableAssignment extends Model
     protected $fillable = [
         'table_number',
         'guest_name',
+        'observations',
         'event_id'
     ];
 
