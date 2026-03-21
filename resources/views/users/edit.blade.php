@@ -116,26 +116,37 @@
 
                         {{-- Eventos --}}
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
-                                Eventos asignados
+                            <label for="event-search-edit" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                                Eventos asignados <span class="text-red-500">*</span>
                             </label>
-                            <select
-                                name="events[]"
-                                multiple
-                                class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600
-                                       bg-white dark:bg-gray-900
-                                       text-gray-900 dark:text-gray-100
-                                       shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm h-40">
+                            <input
+                                type="text"
+                                id="event-search-edit"
+                                placeholder="Buscar evento por nombre..."
+                                class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                            <div id="event-list-edit" class="mt-2 max-h-52 overflow-y-auto rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 p-2 space-y-2">
                                 @foreach($events as $event)
-                                    <option value="{{ $event->id }}" @selected(in_array($event->id, old('events', $userEventIds)))>
-                                        {{ $event->name }} ({{ $event->start_date?->format('d/m/Y') }} - {{ $event->end_date?->format('d/m/Y') }})
-                                    </option>
+                                    <label class="event-item-edit flex items-start gap-2 rounded px-2 py-1 hover:bg-gray-50 dark:hover:bg-gray-800"
+                                           data-name="{{ strtolower($event->name) }}">
+                                        <input
+                                            type="checkbox"
+                                            name="events[]"
+                                            value="{{ $event->id }}"
+                                            @checked(in_array($event->id, old('events', $userEventIds)))
+                                            class="mt-1 rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
+                                        <span class="text-sm text-gray-800 dark:text-gray-200">
+                                            {{ $event->name }} ({{ $event->start_date?->format('d/m/Y') }} - {{ $event->end_date?->format('d/m/Y') }})
+                                        </span>
+                                    </label>
                                 @endforeach
-                            </select>
+                            </div>
                             <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                Los admin ven todos los eventos sin necesidad de asignación.
+                                Seleccioná uno o más eventos. Es obligatorio para cualquier rol (admin y user).
                             </p>
                             @error('events')
+                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                            @enderror
+                            @error('events.*')
                                 <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
@@ -167,4 +178,22 @@
             </div>
         </div>
     </div>
+
+    @push('scripts')
+    <script>
+        (function () {
+            const searchInput = document.getElementById('event-search-edit');
+            if (!searchInput) return;
+            const items = document.querySelectorAll('.event-item-edit');
+
+            searchInput.addEventListener('input', function () {
+                const term = this.value.toLowerCase().trim();
+                items.forEach((item) => {
+                    const name = item.dataset.name || '';
+                    item.style.display = name.includes(term) ? '' : 'none';
+                });
+            });
+        })();
+    </script>
+    @endpush
 </x-app-layout>

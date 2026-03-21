@@ -21,8 +21,7 @@ class StoreUserRequest extends FormRequest
             'email'                 => ['required', 'email', 'max:255', 'unique:users,email'],
             'role'                  => ['required', Rule::enum(RoleEnum::class)],
             'password'              => ['required', 'string', 'min:8', 'confirmed'],
-            // eventos que puede ver/admin
-            'events'                => ['array'],
+            'events'                => ['required', 'array', 'min:1'],
             'events.*'              => ['integer', 'exists:events,id'],
         ];
     }
@@ -34,6 +33,15 @@ class StoreUserRequest extends FormRequest
             'email'    => 'correo',
             'role'     => 'rol',
             'password' => 'contraseña',
+            'events'   => 'eventos',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'events.required' => 'Debe seleccionar al menos un evento.',
+            'events.min'      => 'Debe seleccionar al menos un evento.',
         ];
     }
 }
