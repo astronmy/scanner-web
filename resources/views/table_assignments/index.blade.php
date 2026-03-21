@@ -52,7 +52,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div>
                                 <label for="table_number" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
-                                    Ubicación
+                                    Listado
                                 </label>
                                 <input
                                     type="text"
@@ -68,7 +68,7 @@
 
                             <div class="md:col-span-2">
                                 <label for="guest_name" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
-                                    Invitado
+                                    QR
                                 </label>
                                 <input
                                     type="text"
@@ -120,11 +120,11 @@
                                         </th>
                                         <th scope="col"
                                             class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider w-24">
-                                            Ubicación
+                                            Listado
                                         </th>
                                         <th scope="col"
                                             class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider w-1/2">
-                                            Invitado
+                                            QR
                                         </th>
                                         <th scope="col"
                                             class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider w-40">
