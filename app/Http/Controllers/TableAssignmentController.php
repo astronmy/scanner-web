@@ -71,4 +71,36 @@ class TableAssignmentController extends Controller
             ->route('assignments.index')
             ->with('success', 'Ubicación actualizada correctamente.');
     }
+
+    public function destroy(TableAssignment $assignment)
+    {
+        if (session()->has('currentEvent') && (int) $assignment->event_id !== (int) session('currentEvent')) {
+            return redirect()
+                ->route('assignments.index')
+                ->with('error', 'No podés eliminar un registro de otro evento.');
+        }
+
+        $assignment->delete();
+
+        return redirect()
+            ->route('assignments.index')
+            ->with('success', 'Registro eliminado correctamente.');
+    }
+
+    public function destroyAll(Request $request)
+    {
+        if (!session()->has('currentEvent')) {
+            return redirect()
+                ->route('assignments.index')
+                ->with('error', 'Seleccioná un evento antes de eliminar masivamente.');
+        }
+
+        $deleted = TableAssignment::query()
+            ->where('event_id', session('currentEvent'))
+            ->delete();
+
+        return redirect()
+            ->route('assignments.index')
+            ->with('success', "Se eliminaron {$deleted} registros del listado.");
+    }
 }

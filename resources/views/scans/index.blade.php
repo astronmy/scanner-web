@@ -15,16 +15,24 @@
                         <h1 class="text-lg font-semibold text-gray-800 dark:text-gray-100">
                             Historial de Scans
                         </h1>
-
-                        <a href="{{ route('scans.export', request()->query()) }}"
-                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md
-              bg-violet-600 text-white hover:bg-violet-700
-              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
-                            <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0 4-4m-4 4-4-4M4.5 15.75v1.5A2.25 2.25 0 006.75 19.5h10.5a2.25 2.25 0 002.25-2.25v-1.5" />
-                            </svg>
-                            Exportar
-                        </a>
+                        <div class="flex items-center gap-2">
+                            <a href="{{ route('dashboard') }}"
+                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md bg-[#406075] text-white hover:bg-[#355566] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#406075]">
+                                <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                                </svg>
+                                Volver al dashboard
+                            </a>
+                            <a href="{{ route('scans.export', request()->query()) }}"
+                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md
+                  bg-violet-600 text-white hover:bg-violet-700
+                  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
+                                <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0 4-4m-4 4-4-4M4.5 15.75v1.5A2.25 2.25 0 006.75 19.5h10.5a2.25 2.25 0 002.25-2.25v-1.5" />
+                                </svg>
+                                Exportar
+                            </a>
+                        </div>
                     </div>
 
 

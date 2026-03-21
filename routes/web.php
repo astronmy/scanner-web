@@ -28,6 +28,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/{assignment}/edit', 'edit')->name('edit');
             Route::put('/{assignment}', 'update')->name('update');
             Route::delete('/{assignment}', 'destroy')->name('destroy');
+            Route::delete('/destroy-all', 'destroyAll')->name('destroy-all');
         });
 
     Route::prefix('scanners')

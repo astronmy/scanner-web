@@ -16,16 +16,34 @@
                             Listado 
                         </h1>
 
-                        {{-- Botón para importar --}}
-                        <a href="{{ route('assignments.import-form') }}"
-                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md
+                        <div class="flex items-center gap-2">
+                            <a href="{{ route('dashboard') }}"
+                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md bg-[#406075] text-white hover:bg-[#355566] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#406075]">
+                                <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                                </svg>
+                                Volver al dashboard
+                            </a>
+                            <button type="button"
+                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                data-bulk-delete-btn>
+                                <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 7.5h15m-1.5 0-1.002 11.018A2.25 2.25 0 0114.757 20.25H9.243a2.25 2.25 0 01-2.241-1.732L6 7.5m3-3h6a1.5 1.5 0 011.5 1.5v1.5h-9V6A1.5 1.5 0 019 4.5z" />
+                                </svg>
+                                Eliminar todo el listado
+                            </button>
+
+                            {{-- Botón para importar --}}
+                            <a href="{{ route('assignments.import-form') }}"
+                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md
           bg-violet-600 text-white hover:bg-violet-700
           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
-                            <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 21V9m0 0 4 4m-4-4-4 4M4.5 15.75v1.5A2.25 2.25 0 006.75 19.5h10.5a2.25 2.25 0 002.25-2.25v-1.5" />
-                            </svg>
-                            Importar desde Excel
-                        </a>
+                                <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 21V9m0 0 4 4m-4-4-4 4M4.5 15.75v1.5A2.25 2.25 0 006.75 19.5h10.5a2.25 2.25 0 002.25-2.25v-1.5" />
+                                </svg>
+                                Importar desde Excel
+                            </a>
+                        </div>
                     </div>
 
                     {{-- Filtros --}}
@@ -208,6 +226,38 @@
                     document.getElementById('delete-assignment-form').action = url;
                     window.dispatchEvent(new CustomEvent('open-modal', { detail: 'confirm-delete-assignment' }));
                 }
+            });
+        });
+    </script>
+
+    <x-modal name="confirm-delete-all-assignments" :show="false" maxWidth="md">
+        <div class="p-6 sm:p-8">
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Eliminar todo el listado</h3>
+            <p class="text-base font-normal text-gray-600 dark:text-gray-400 mb-8">
+                ¿Está seguro? Se eliminarán todos los registros del listado del evento seleccionado.
+            </p>
+            <form method="POST" action="{{ route('assignments.destroy-all') }}">
+                @csrf
+                @method('DELETE')
+                <div class="flex justify-end gap-3">
+                    <button type="button"
+                        class="inline-flex items-center px-5 py-2.5 text-base font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400"
+                        x-on:click="$dispatch('close-modal', 'confirm-delete-all-assignments')">
+                        Cancelar
+                    </button>
+                    <button type="submit"
+                        class="inline-flex items-center px-5 py-2.5 text-base font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                        Eliminar todo
+                    </button>
+                </div>
+            </form>
+        </div>
+    </x-modal>
+
+    <script>
+        document.querySelectorAll('[data-bulk-delete-btn]').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                window.dispatchEvent(new CustomEvent('open-modal', { detail: 'confirm-delete-all-assignments' }));
             });
         });
     </script>

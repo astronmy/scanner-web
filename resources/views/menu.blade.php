@@ -47,15 +47,15 @@
                     <span class="font-semibold text-gray-800 dark:text-gray-100">Usuarios</span>
                 </a>
 
-                @if(auth()->user()?->isAdmin())
-                    <a href="{{ route('events.index') }}"
+                @if(auth()->user()?->isAdmin() && session('currentEvent'))
+                    <a href="{{ route('events.edit', session('currentEvent')) }}"
                        class="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow hover:shadow-md transition-shadow">
                         <div class="shrink-0 w-12 h-12 rounded-lg bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center">
                             <svg class="w-6 h-6 text-amber-600 dark:text-amber-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7.5h18M3 12h18M3 16.5h18" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.862 3.487a2.25 2.25 0 113.182 3.182L9.75 16.963 6 18l1.037-3.75 9.825-10.763z" />
                             </svg>
                         </div>
-                        <span class="font-semibold text-gray-800 dark:text-gray-100">Gestionar eventos</span>
+                        <span class="font-semibold text-gray-800 dark:text-gray-100">Gestionar Evento</span>
                     </a>
                 @endif
             </div>

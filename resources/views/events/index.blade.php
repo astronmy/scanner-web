@@ -40,16 +40,24 @@
                         <h1 class="text-lg font-semibold text-gray-800 dark:text-gray-100">
                             Lista de eventos
                         </h1>
-
-                        <a href="{{ route('events.create') }}"
-                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md
-                                  bg-emerald-600 text-white hover:bg-emerald-700
-                                  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
-                            <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                            </svg>
-                            Nuevo evento
-                        </a>
+                        <div class="flex items-center gap-2">
+                            <a href="{{ route('dashboard') }}"
+                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md bg-[#406075] text-white hover:bg-[#355566] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#406075]">
+                                <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                                </svg>
+                                Volver al dashboard
+                            </a>
+                            <a href="{{ route('events.create') }}"
+                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md
+                                      bg-emerald-600 text-white hover:bg-emerald-700
+                                      focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
+                                <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                </svg>
+                                Nuevo evento
+                            </a>
+                        </div>
                     </div>
 
                     {{-- Filtros --}}
@@ -182,7 +190,7 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"
-                                                    class="px-3 py-1 text-xs font-semibold rounded-md
+                                                    class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-md
                                                                bg-red-600 text-white hover:bg-red-700
                                                                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                                                     <svg class="mr-1 inline h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
