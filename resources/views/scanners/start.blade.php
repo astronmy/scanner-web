@@ -116,7 +116,7 @@
 
                     if (data && data.location && data.name) {
                         let control = data.exists == 1
-                            ? '<div class="mt-2 text-red-600 dark:text-red-400 font-semibold">La persona ya ingreso previamente</div>'
+                            ? '<div class="mt-2 text-red-600 dark:text-red-400 font-semibold">La persona ya ingres? previamente</div>'
                             : '';
                         let message = `<center>${data.name}<br>${label}: <br>${data.location}</center>${control}`;
 
