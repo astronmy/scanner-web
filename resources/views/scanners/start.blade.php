@@ -35,7 +35,7 @@
 
                                 <p id="qr-status"
                                     class="mt-4 text-sm text-gray-700 dark:text-gray-200 text-center">
-                                    Apuntá la cámara al código QR
+                                    Apunt? la c?mara al c?digo QR
                                 </p>
 
                                 <p id="qr-result"
@@ -88,7 +88,7 @@
 
             async function sendScan(decodedText) {
                 try {
-                    result.textContent = 'Código detectado, procesando...';
+                    result.textContent = 'C?digo detectado, procesando...';
                     result.classList.remove(
                         'text-gray-700', 'dark:text-gray-200',
                         'text-red-600', 'dark:text-red-400',
@@ -115,12 +115,15 @@
                     const data = await response.json().catch(() => ({}));
 
                     if (data && data.location && data.name) {
-                        let control = data.exists == 1 ? 'La persona ya ingreso previamente' : '';
-                        let message = `<center>${data.name}<br>${label}: <br>${data.location}</center>
-                        ${control}`;
+                        let control = data.exists == 1
+                            ? '<div class="mt-2 text-red-600 dark:text-red-400 font-semibold">La persona ya ingreso previamente</div>'
+                            : '';
+                        let message = `<center>${data.name}<br>${label}: <br>${data.location}</center>${control}`;
 
                         result.innerHTML = message;
                         status.textContent = '';
+                        result.classList.remove('text-red-600', 'dark:text-red-400');
+                        result.classList.add('text-emerald-600', 'dark:text-emerald-400');
 
                         if (userTotals) {
                             userTotals.textContent = data.user_scans;
@@ -137,8 +140,8 @@
                     }
 
                 } catch (error) {
-                    console.error('Error en el envío AJAX', error);
-                    result.textContent = 'Ocurrió un error al procesar el código.';
+                    console.error('Error en el env?o AJAX', error);
+                    result.textContent = 'Ocurri? un error al procesar el c?digo.';
                     result.classList.remove('text-emerald-600', 'dark:text-emerald-400');
                     result.classList.add('text-red-600', 'dark:text-red-400');
                 }
@@ -158,7 +161,7 @@
 
                 Html5Qrcode.getCameras().then(cameras => {
                     if (!cameras.length) {
-                        result.textContent = 'No se encontró ninguna cámara.';
+                        result.textContent = 'No se encontr? ninguna c?mara.';
                         return;
                     }
 
@@ -172,7 +175,7 @@
                         isScanning = true;
                     }).catch(err => {
                         console.error(err);
-                        result.textContent = 'No se pudo iniciar la cámara.';
+                        result.textContent = 'No se pudo iniciar la c?mara.';
                     });
                 });
             }
@@ -190,7 +193,7 @@
 
             btnNew.addEventListener('click', () => {
                 result.textContent = '';
-                status.textContent = 'Apuntá la cámara al código QR';
+                status.textContent = 'Apunt? la c?mara al c?digo QR';
 
                 if (isScanning) {
                     html5QrCode.stop().finally(startScanner);

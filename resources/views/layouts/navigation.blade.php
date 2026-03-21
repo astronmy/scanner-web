@@ -66,6 +66,22 @@
                                 </div>
                             @endif
                         </div>
+                        @if(auth()->user()?->isAdmin())
+                            <div class="border-t border-gray-200 dark:border-gray-600 p-2 bg-gray-50 dark:bg-gray-700/80 space-y-1">
+                                <a href="{{ route('events.index') }}"
+                                   @click="eventDropdownOpen = false"
+                                   class="block text-center text-sm font-medium text-[#406075] dark:text-indigo-300 hover:underline">
+                                    Gestionar eventos
+                                </a>
+                                @if($currentEventId)
+                                    <a href="{{ route('events.edit', $currentEventId) }}"
+                                       @click="eventDropdownOpen = false"
+                                       class="block text-center text-sm font-medium text-gray-600 dark:text-gray-300 hover:underline">
+                                        Editar evento seleccionado
+                                    </a>
+                                @endif
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
