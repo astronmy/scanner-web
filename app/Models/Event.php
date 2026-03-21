@@ -17,6 +17,7 @@ class Event extends Model
         'new_button_enabled',
         'message_not_found',
         'scan_type',
+        'autostart',
     ];
 
     protected $casts = [
@@ -24,6 +25,7 @@ class Event extends Model
         'end_date'   => 'date',
         'new_button_enabled' => 'boolean',
         'scan_type' => 'integer',
+        'autostart' => 'boolean',
     ];
 
     public function users()

@@ -78,6 +78,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const qrRegionId = "qr-reader";
             const html5QrCode = new Html5Qrcode(qrRegionId);
+            const autoStartEnabled = @json($autoStartEnabled ?? false);
 
             const status = document.getElementById('qr-status');
             const result = document.getElementById('qr-result');
@@ -146,6 +147,23 @@
                     result.textContent = 'Ocurri\u00f3 un error al procesar el c\u00f3digo.';
                     result.classList.remove('text-emerald-600', 'dark:text-emerald-400');
                     result.classList.add('text-red-600', 'dark:text-red-400');
+                } finally {
+                    if (autoStartEnabled) {
+                        setTimeout(() => {
+                            triggerNewScan();
+                        }, 700);
+                    }
+                }
+            }
+
+            function triggerNewScan() {
+                result.textContent = '';
+                status.textContent = 'Apunt\u00e1 la c\u00e1mara al c\u00f3digo QR';
+
+                if (isScanning) {
+                    html5QrCode.stop().finally(startScanner);
+                } else {
+                    startScanner();
                 }
             }
 
@@ -195,14 +213,7 @@
 
             if (btnNew) {
                 btnNew.addEventListener('click', () => {
-                    result.textContent = '';
-                    status.textContent = 'Apunt\u00e1 la c\u00e1mara al c\u00f3digo QR';
-
-                    if (isScanning) {
-                        html5QrCode.stop().finally(startScanner);
-                    } else {
-                        startScanner();
-                    }
+                    triggerNewScan();
                 });
             }
 
