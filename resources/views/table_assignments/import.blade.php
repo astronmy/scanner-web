@@ -41,6 +41,9 @@
                             <a href="{{ route('assignments.index') }}"
                                class="inline-flex items-center px-4 py-2 border border-gray-300
                                       text-sm font-medium rounded-md bg-white text-gray-700 hover:bg-gray-50">
+                                <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                                </svg>
                                 Cancelar
                             </a>
 
@@ -48,6 +51,9 @@
                                     class="inline-flex items-center px-4 py-2 border border-transparent
                                            text-sm font-medium rounded-md bg-indigo-600 text-white
                                            hover:bg-indigo-700">
+                                <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 21V9m0 0 4 4m-4-4-4 4M4.5 15.75v1.5A2.25 2.25 0 006.75 19.5h10.5a2.25 2.25 0 002.25-2.25v-1.5" />
+                                </svg>
                                 Importar
                             </button>
                         </div>

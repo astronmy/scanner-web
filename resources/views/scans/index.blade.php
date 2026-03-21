@@ -20,6 +20,9 @@
                             class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md
               bg-violet-600 text-white hover:bg-violet-700
               focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
+                            <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0 4-4m-4 4-4-4M4.5 15.75v1.5A2.25 2.25 0 006.75 19.5h10.5a2.25 2.25 0 002.25-2.25v-1.5" />
+                            </svg>
                             Exportar
                         </a>
                     </div>
@@ -104,6 +107,9 @@
                                 class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium
                                        rounded-md bg-emerald-600 text-white hover:bg-emerald-700
                                        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
+                                <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 5.25h18M6.75 5.25v13.5A1.5 1.5 0 008.25 20.25h7.5a1.5 1.5 0 001.5-1.5V5.25M9.75 10.5h4.5" />
+                                </svg>
                                 Filtrar
                             </button>
 
@@ -111,6 +117,9 @@
                                 class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium
                                       rounded-md bg-red-600 text-white hover:bg-red-700
                                       focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
                                 Limpiar
                             </a>
                         </div>
@@ -165,10 +174,13 @@
                                                 @method('DELETE')
 
                                                 <button type="submit"
-                                                    class="px-3 py-1 text-xs font-semibold rounded-md
+                                                    class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-md
                    bg-red-600 text-white hover:bg-red-700
                    focus:outline-none focus:ring-2 focus:ring-offset-2
                    focus:ring-red-500">
+                                                    <svg class="mr-1 h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 7.5h12m-1.5 0-.663 10.608A2.25 2.25 0 0113.59 20.25h-3.18a2.25 2.25 0 01-2.247-2.142L7.5 7.5m3-3h3a1.5 1.5 0 011.5 1.5v1.5h-6V6a1.5 1.5 0 011.5-1.5z" />
+                                                    </svg>
                                                     Eliminar
                                                 </button>
                                             </form>

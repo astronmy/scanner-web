@@ -21,6 +21,9 @@
                             class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md
           bg-violet-600 text-white hover:bg-violet-700
           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
+                            <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 21V9m0 0 4 4m-4-4-4 4M4.5 15.75v1.5A2.25 2.25 0 006.75 19.5h10.5a2.25 2.25 0 002.25-2.25v-1.5" />
+                            </svg>
                             Importar desde Excel
                         </a>
                     </div>
@@ -68,6 +71,9 @@
                                 class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium
            rounded-md bg-emerald-600 text-white hover:bg-emerald-700
            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
+                                <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 5.25h18M6.75 5.25v13.5A1.5 1.5 0 008.25 20.25h7.5a1.5 1.5 0 001.5-1.5V5.25M9.75 10.5h4.5" />
+                                </svg>
                                 Filtrar
                             </button>
 
@@ -75,6 +81,9 @@
                                 class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium
           rounded-md bg-red-600 text-white hover:bg-red-700
           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
                                 Limpiar
                             </a>
                         </div>
@@ -129,6 +138,9 @@
                                             <a href="{{ route('assignments.edit', $assignment) }}"
                                                 class="inline-flex items-center px-2 py-1 border border-transparent text-xs
                                       rounded-md bg-indigo-100 text-indigo-700 hover:bg-indigo-200">
+                                                <svg class="mr-1 h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.487a2.25 2.25 0 113.182 3.182L9.75 16.963 6 18l1.037-3.75 9.825-10.763z" />
+                                                </svg>
                                                 Editar
                                             </a>
                                         </td>
