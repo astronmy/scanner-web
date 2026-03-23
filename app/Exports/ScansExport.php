@@ -24,7 +24,7 @@ class ScansExport implements FromQuery, WithHeadings, WithMapping
 
     public function query()
     {
-        return $this->baseQuery()->orderByDesc('scanned_at');
+        return $this->baseQuery()->orderByDesc('scans.scanned_at');
     }
 
     private function baseQuery()
@@ -38,23 +38,23 @@ class ScansExport implements FromQuery, WithHeadings, WithMapping
             ->select('scans.*', DB::raw('ta.observations as assignment_observations'));
 
         if (session()->has('currentEvent')) {
-            $query->where('event_id', session('currentEvent'));
+            $query->where('scans.event_id', session('currentEvent'));
         }
 
         if (!empty($this->filters['value'])) {
-            $query->where('value', 'like', '%' . $this->filters['value'] . '%');
+            $query->where('scans.value', 'like', '%' . $this->filters['value'] . '%');
         }
 
         if (!empty($this->filters['user_id'])) {
-            $query->where('user_id', $this->filters['user_id']);
+            $query->where('scans.user_id', $this->filters['user_id']);
         }
 
         if (!empty($this->filters['from'])) {
-            $query->whereDate('scanned_at', '>=', $this->filters['from']);
+            $query->whereDate('scans.scanned_at', '>=', $this->filters['from']);
         }
 
         if (!empty($this->filters['to'])) {
-            $query->whereDate('scanned_at', '<=', $this->filters['to']);
+            $query->whereDate('scans.scanned_at', '<=', $this->filters['to']);
         }
 
         return $query;

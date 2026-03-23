@@ -29,8 +29,8 @@ class EventScansSheet implements FromCollection, WithHeadings, WithTitle
                     ->on('ta.guest_name', '=', 'scans.value');
             })
             ->select('scans.*', DB::raw('ta.observations as assignment_observations'))
-            ->where('event_id', $this->event->id)
-            ->orderByDesc('scanned_at')
+            ->where('scans.event_id', $this->event->id)
+            ->orderByDesc('scans.scanned_at')
             ->get()
             ->map(function (Scan $scan) {
                 $user = $scan->user;
