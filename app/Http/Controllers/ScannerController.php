@@ -59,6 +59,9 @@ class ScannerController extends Controller
             ]);
         }
 
+        $event = Event::findOrFail(session('currentEvent'));
+        $checkDuplicity = (bool) ($event->check_duplicity ?? false);
+
         $checkQry = Scan::query();
 
         if (session()->has('currentEvent')) {
@@ -67,7 +70,28 @@ class ScannerController extends Controller
 
         $alreadyScan = $checkQry->where('value', $search->guest_name)->exists();
 
-        if(! $alreadyScan) {
+        $confirmDuplicate = $request->boolean('confirm_duplicate');
+
+        if ($alreadyScan && $checkDuplicity && !$confirmDuplicate) {
+            $scans = Scan::where('event_id', session('currentEvent'))->count();
+            $total = TableAssignment::where('event_id', session('currentEvent'))->count();
+            $userScans = Scan::where('event_id', session('currentEvent'))
+                ->where('user_id', $request->user()->id)
+                ->count();
+
+            return response()->json([
+                'location' => $search->table_number,
+                'name' => $search->guest_name,
+                'exists' => 1,
+                'requires_confirmation' => true,
+                'message' => 'Desea agregarlo nuevamente?',
+                'scans' => $scans,
+                'total' => $total,
+                'user_scans' => $userScans,
+            ]);
+        }
+
+        if(! $alreadyScan || ($alreadyScan && $checkDuplicity && $confirmDuplicate)) {
             Scan::create([
                 'user_id'    => $request->user()->id,
                 'event_id'   => session('currentEvent'),
@@ -85,6 +109,7 @@ class ScannerController extends Controller
                 'location' => $search->table_number,
                 'name' => $search->guest_name,
                 'exists' => (int) $alreadyScan,
+                'requires_confirmation' => false,
                 'scans' => $scans,
                 'total' => $total,
                 'user_scans'=> $userScans

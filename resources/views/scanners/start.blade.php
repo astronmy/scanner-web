@@ -123,6 +123,26 @@
             </form>
         </div>
     </x-modal>
+    <x-modal name="confirm-duplicate-scan-modal" :show="false" maxWidth="md">
+        <div class="p-6 sm:p-8">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-3">Escaneo duplicado</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
+                Desea agregarlo nuevamente?
+            </p>
+            <div class="flex justify-end gap-3">
+                <button type="button"
+                    id="btn-cancel-duplicate-confirmation"
+                    class="inline-flex items-center px-5 py-2.5 text-base font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400">
+                    No
+                </button>
+                <button type="button"
+                    id="btn-confirm-duplicate-scan"
+                    class="inline-flex items-center px-5 py-2.5 text-base font-medium text-white bg-[#406075] hover:bg-[#355566] rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#406075]">
+                    S&iacute;, agregar
+                </button>
+            </div>
+        </div>
+    </x-modal>
     {{-- Script del lector --}}
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
@@ -138,13 +158,17 @@
             const btnOpenManualScanModal = document.getElementById('btn-open-manual-scan-modal');
             const manualScanForm = document.getElementById('manual-scan-form');
             const manualScanError = document.getElementById('manual-scan-error');
+            const btnConfirmDuplicateScan = document.getElementById('btn-confirm-duplicate-scan');
+            const btnCancelDuplicateConfirmation = document.getElementById('btn-cancel-duplicate-confirmation');
             const userTotals = document.getElementById('userTotals');
             const generalTotals = document.getElementById('generalTotals');
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             const label = document.getElementById('label').value;
             let isScanning = false;
+            let pendingDuplicateValue = null;
 
-            async function sendScan(decodedText) {
+            async function sendScan(decodedText, confirmDuplicate = false) {
+                let shouldAutoRestart = autoStartEnabled;
                 try {
                     result.textContent = 'C\u00f3digo detectado, procesando...';
                     result.classList.remove(
@@ -163,6 +187,7 @@
                         },
                         body: JSON.stringify({
                             value: decodedText,
+                            confirm_duplicate: confirmDuplicate ? 1 : 0,
                         }),
                     });
 
@@ -171,6 +196,13 @@
                     }
 
                     const data = await response.json().catch(() => ({}));
+
+                    if (data && data.requires_confirmation) {
+                        pendingDuplicateValue = decodedText;
+                        shouldAutoRestart = false;
+                        window.dispatchEvent(new CustomEvent('open-modal', { detail: 'confirm-duplicate-scan-modal' }));
+                        return;
+                    }
 
                     if (data && data.location && data.name) {
                         let control = data.exists == 1
@@ -203,7 +235,7 @@
                     result.classList.remove('text-emerald-600', 'dark:text-emerald-400');
                     result.classList.add('text-red-600', 'dark:text-red-400');
                 } finally {
-                    if (autoStartEnabled) {
+                    if (shouldAutoRestart) {
                         setTimeout(() => {
                             triggerNewScan();
                         }, 700);
@@ -333,6 +365,31 @@
                             manualScanError.classList.remove('hidden');
                         }
                     }
+                });
+            }
+
+            if (btnConfirmDuplicateScan) {
+                btnConfirmDuplicateScan.addEventListener('click', () => {
+                    if (!pendingDuplicateValue) {
+                        window.dispatchEvent(new CustomEvent('close-modal', { detail: 'confirm-duplicate-scan-modal' }));
+                        return;
+                    }
+
+                    const valueToConfirm = pendingDuplicateValue;
+                    pendingDuplicateValue = null;
+                    window.dispatchEvent(new CustomEvent('close-modal', { detail: 'confirm-duplicate-scan-modal' }));
+                    sendScan(valueToConfirm, true);
+                });
+            }
+
+            if (btnCancelDuplicateConfirmation) {
+                btnCancelDuplicateConfirmation.addEventListener('click', () => {
+                    pendingDuplicateValue = null;
+                    window.dispatchEvent(new CustomEvent('close-modal', { detail: 'confirm-duplicate-scan-modal' }));
+                    status.textContent = '';
+                    result.textContent = 'Escaneo duplicado no almacenado.';
+                    result.classList.remove('text-emerald-600', 'dark:text-emerald-400');
+                    result.classList.add('text-red-600', 'dark:text-red-400');
                 });
             }
 

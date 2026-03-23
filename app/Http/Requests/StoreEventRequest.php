@@ -21,6 +21,8 @@ class StoreEventRequest extends FormRequest
             'message_not_found' => ['nullable', 'string', 'max:255'],
             'scan_type' => ['required', 'integer', 'in:1,2'],
             'autostart' => ['required', 'boolean'],
+            'separator' => ['nullable', 'string', 'max:20'],
+            'check_duplicity' => ['required', 'boolean'],
         ];
     }
 
@@ -29,6 +31,7 @@ class StoreEventRequest extends FormRequest
         $this->merge([
             'new_button_enabled' => $this->boolean('new_button_enabled'),
             'autostart' => $this->boolean('autostart'),
+            'check_duplicity' => $this->boolean('check_duplicity'),
             'scan_type' => (int) ($this->input('scan_type', 1)),
         ]);
     }
@@ -43,6 +46,8 @@ class StoreEventRequest extends FormRequest
             'message_not_found' => 'mensaje de escáner',
             'scan_type' => 'tipo de escaneo',
             'autostart' => 'iniciar automáticamente',
+            'separator' => 'separador',
+            'check_duplicity' => 'chequear duplicidad',
         ];
     }
 }

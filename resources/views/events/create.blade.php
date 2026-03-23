@@ -111,6 +111,24 @@
                                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
+                            <div class="mb-3">
+                                <label for="separator" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                                    Separador
+                                </label>
+                                <input
+                                    type="text"
+                                    name="separator"
+                                    id="separator"
+                                    value="{{ old('separator') }}"
+                                    placeholder="Ejemplo: -"
+                                    class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600
+                                           bg-white dark:bg-gray-900
+                                           text-gray-900 dark:text-gray-100
+                                           shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                                @error('separator')
+                                    <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
                             <div class="flex items-center justify-between rounded-lg border border-gray-200 dark:border-gray-700 p-3">
                                 <div>
                                     <p class="text-sm font-medium text-gray-800 dark:text-gray-100">Mostrar botón "Nuevo" Escáner</p>
@@ -147,6 +165,25 @@
                                 </label>
                             </div>
                             @error('autostart')
+                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                            @enderror
+                            <div class="mt-3 flex items-center justify-between rounded-lg border border-gray-200 dark:border-gray-700 p-3">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-800 dark:text-gray-100">Chequear duplicidad</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Si detecta duplicado, pedirá confirmación para volver a guardar.</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="hidden" name="check_duplicity" value="0">
+                                    <input type="checkbox"
+                                           name="check_duplicity"
+                                           value="1"
+                                           class="sr-only peer"
+                                           @checked(old('check_duplicity', 0))>
+                                    <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-500 dark:peer-focus:ring-indigo-400 rounded-full peer dark:bg-gray-600 peer-checked:bg-emerald-600 transition-colors"></div>
+                                    <div class="absolute left-0.5 top-0.5 h-5 w-5 bg-white rounded-full transition-transform peer-checked:translate-x-5"></div>
+                                </label>
+                            </div>
+                            @error('check_duplicity')
                                 <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                             @enderror
                         </div>

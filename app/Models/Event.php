@@ -18,6 +18,8 @@ class Event extends Model
         'message_not_found',
         'scan_type',
         'autostart',
+        'separator',
+        'check_duplicity',
     ];
 
     protected $casts = [
@@ -26,6 +28,7 @@ class Event extends Model
         'new_button_enabled' => 'boolean',
         'scan_type' => 'integer',
         'autostart' => 'boolean',
+        'check_duplicity' => 'boolean',
     ];
 
     public function users()
