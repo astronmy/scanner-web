@@ -9,13 +9,17 @@ class Scan extends Model
 {
    use HasFactory;
 
+    public const ORIGIN_AUTOMATIC = 'AUTOMATIC';
+    public const ORIGIN_MANUAL = 'MANUAL';
+
     protected $table = 'scans';
 
     protected $fillable = [
         'user_id',
         'value',
         'scanned_at',
-        'event_id'
+        'event_id',
+        'origin',
     ];
 
     protected $casts = [

@@ -24,6 +24,17 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
+                    <div class="flex justify-end mb-4">
+                        <button
+                            type="button"
+                            class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#406075] text-white hover:bg-[#355566] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#406075] shadow-lg"
+                            title="Cargar scan manual"
+                            id="btn-open-manual-scan-modal">
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
+                        </button>
+                    </div>
                     <div class="flex items-center justify-center min-h-[60vh]">
                         <div class="w-full max-w-sm">
                             {{-- Card del lector --}}
@@ -71,6 +82,47 @@
         </div>
     </div>
     <input type="hidden" id="label" value="{!!$label!!}"/>
+    <x-modal name="manual-scan-modal" :show="false" maxWidth="md">
+        <div class="p-6 sm:p-8">
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Cargar scan manual</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
+                Complet? el QR/valor y una observaci?n opcional.
+            </p>
+            <form id="manual-scan-form" class="space-y-4">
+                <div>
+                    <label for="manual-value" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                        QR / Valor
+                    </label>
+                    <input id="manual-value"
+                           name="value"
+                           type="text"
+                           required
+                           class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                </div>
+                <div>
+                    <label for="manual-observation" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                        Observaci?n (opcional)
+                    </label>
+                    <textarea id="manual-observation"
+                              name="observation"
+                              rows="3"
+                              class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"></textarea>
+                </div>
+                <p id="manual-scan-error" class="hidden text-xs text-red-600"></p>
+                <div class="flex justify-end gap-3">
+                    <button type="button"
+                        class="inline-flex items-center px-5 py-2.5 text-base font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400"
+                        x-on:click="$dispatch('close-modal', 'manual-scan-modal')">
+                        Cancelar
+                    </button>
+                    <button type="submit"
+                        class="inline-flex items-center px-5 py-2.5 text-base font-medium text-white bg-[#406075] hover:bg-[#355566] rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#406075]">
+                        Guardar manual
+                    </button>
+                </div>
+            </form>
+        </div>
+    </x-modal>
     {{-- Script del lector --}}
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
@@ -83,6 +135,9 @@
             const status = document.getElementById('qr-status');
             const result = document.getElementById('qr-result');
             const btnNew = document.getElementById('btn-new');
+            const btnOpenManualScanModal = document.getElementById('btn-open-manual-scan-modal');
+            const manualScanForm = document.getElementById('manual-scan-form');
+            const manualScanError = document.getElementById('manual-scan-error');
             const userTotals = document.getElementById('userTotals');
             const generalTotals = document.getElementById('generalTotals');
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -214,6 +269,70 @@
             if (btnNew) {
                 btnNew.addEventListener('click', () => {
                     triggerNewScan();
+                });
+            }
+
+            if (btnOpenManualScanModal) {
+                btnOpenManualScanModal.addEventListener('click', () => {
+                    window.dispatchEvent(new CustomEvent('open-modal', { detail: 'manual-scan-modal' }));
+                    if (manualScanError) {
+                        manualScanError.classList.add('hidden');
+                        manualScanError.textContent = '';
+                    }
+                });
+            }
+
+            if (manualScanForm) {
+                manualScanForm.addEventListener('submit', async (event) => {
+                    event.preventDefault();
+                    if (manualScanError) {
+                        manualScanError.classList.add('hidden');
+                        manualScanError.textContent = '';
+                    }
+
+                    const formData = new FormData(manualScanForm);
+                    const payload = {
+                        value: formData.get('value'),
+                        observation: formData.get('observation'),
+                    };
+
+                    try {
+                        const response = await fetch("{{ route('scanners.manual') }}", {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': csrfToken,
+                            },
+                            body: JSON.stringify(payload),
+                        });
+
+                        const data = await response.json().catch(() => ({}));
+                        if (!response.ok) {
+                            throw new Error(data.message || 'No se pudo guardar el scan manual.');
+                        }
+
+                        const obs = data.location && data.location !== '?'
+                            ? `<div class="mt-1 text-sm text-gray-700 dark:text-gray-300">${data.location}</div>`
+                            : '';
+                        result.innerHTML = `<center>${data.name}<br>${label}: <br>MANUAL</center>${obs}`;
+                        result.classList.remove('text-red-600', 'dark:text-red-400');
+                        result.classList.add('text-emerald-600', 'dark:text-emerald-400');
+                        status.textContent = '';
+
+                        if (userTotals) userTotals.textContent = data.user_scans ?? userTotals.textContent;
+                        if (generalTotals && data.scans != null && data.total != null) {
+                            generalTotals.textContent = `${data.scans}/${data.total}`;
+                        }
+
+                        manualScanForm.reset();
+                        window.dispatchEvent(new CustomEvent('close-modal', { detail: 'manual-scan-modal' }));
+                    } catch (error) {
+                        if (manualScanError) {
+                            manualScanError.textContent = error.message || 'No se pudo guardar el scan manual.';
+                            manualScanError.classList.remove('hidden');
+                        }
+                    }
                 });
             }
 
