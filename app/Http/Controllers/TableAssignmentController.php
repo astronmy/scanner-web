@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TableAssignmentsListExport;
 use App\Exports\TableAssignmentsTemplateExport;
 use App\Http\Requests\ImportTableAssignmentRequest;
 use App\Imports\TableAssignmentImport;
@@ -33,6 +34,15 @@ class TableAssignmentController extends Controller
             ->paginate(20);
 
         return view('table_assignments.index', compact('tableAssignments'));
+    }
+
+    public function export(Request $request)
+    {
+        $filters = $request->only(['table_number', 'guest_name']);
+        $suffix = session('currentEvent') ? 'event_' . session('currentEvent') : 'sin_evento';
+        $fileName = 'listado_' . $suffix . '_' . now()->format('Ymd_His') . '.xlsx';
+
+        return Excel::download(new TableAssignmentsListExport($filters), $fileName);
     }
 
     public function import(ImportTableAssignmentRequest $request)

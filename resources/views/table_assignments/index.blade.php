@@ -16,7 +16,7 @@
                             Listado 
                         </h1>
 
-                        <div class="flex items-center gap-2">
+                        <div class="flex flex-wrap items-center gap-2">
                             <a href="{{ route('dashboard') }}"
                                 class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md bg-[#406075] text-white hover:bg-[#355566] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#406075]">
                                 <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -24,25 +24,34 @@
                                 </svg>
                                 Volver al dashboard
                             </a>
-                            <button type="button"
-                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                                data-bulk-delete-btn>
+                            <a href="{{ route('assignments.export', request()->query()) }}"
+                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md bg-emerald-600 text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
                                 <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 7.5h15m-1.5 0-1.002 11.018A2.25 2.25 0 0114.757 20.25H9.243a2.25 2.25 0 01-2.241-1.732L6 7.5m3-3h6a1.5 1.5 0 011.5 1.5v1.5h-9V6A1.5 1.5 0 019 4.5z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0 4-4m-4 4-4-4M4.5 15.75v1.5A2.25 2.25 0 006.75 19.5h10.5a2.25 2.25 0 002.25-2.25v-1.5" />
                                 </svg>
-                                Eliminar todo el listado
-                            </button>
+                                Exportar Excel
+                            </a>
+                            @unless(auth()->user()?->isUser())
+                                <button type="button"
+                                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                    data-bulk-delete-btn>
+                                    <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 7.5h15m-1.5 0-1.002 11.018A2.25 2.25 0 0114.757 20.25H9.243a2.25 2.25 0 01-2.241-1.732L6 7.5m3-3h6a1.5 1.5 0 011.5 1.5v1.5h-9V6A1.5 1.5 0 019 4.5z" />
+                                    </svg>
+                                    Eliminar todo el listado
+                                </button>
 
-                            {{-- Botón para importar --}}
-                            <a href="{{ route('assignments.import-form') }}"
-                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md
+                                {{-- Botón para importar --}}
+                                <a href="{{ route('assignments.import-form') }}"
+                                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md
           bg-violet-600 text-white hover:bg-violet-700
           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
-                                <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 21V9m0 0 4 4m-4-4-4 4M4.5 15.75v1.5A2.25 2.25 0 006.75 19.5h10.5a2.25 2.25 0 002.25-2.25v-1.5" />
-                                </svg>
-                                Importar desde Excel
-                            </a>
+                                    <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 21V9m0 0 4 4m-4-4-4 4M4.5 15.75v1.5A2.25 2.25 0 006.75 19.5h10.5a2.25 2.25 0 002.25-2.25v-1.5" />
+                                    </svg>
+                                    Importar desde Excel
+                                </a>
+                            @endunless
                         </div>
                     </div>
 
@@ -130,10 +139,12 @@
                                             class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider w-40">
                                             Creado
                                         </th>
-                                        <th scope="col"
-                                            class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider text-right w-32">
-                                            Acciones
-                                        </th>
+                                        @unless(auth()->user()?->isUser())
+                                            <th scope="col"
+                                                class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider text-right w-32">
+                                                Acciones
+                                            </th>
+                                        @endunless
                                     </tr>
                                 </thead>
 
@@ -152,29 +163,31 @@
                                         <td class="px-6 py-3 whitespace-nowrap text-gray-500 dark:text-gray-400 text-xs">
                                             {{ $assignment->created_at?->format('d/m/Y H:i') }}
                                         </td>
-                                        <td class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                                            <a href="{{ route('assignments.edit', $assignment) }}"
-                                                class="inline-flex items-center px-2 py-1 border border-transparent text-xs
+                                        @unless(auth()->user()?->isUser())
+                                            <td class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                                                <a href="{{ route('assignments.edit', $assignment) }}"
+                                                    class="inline-flex items-center px-2 py-1 border border-transparent text-xs
                                       rounded-md bg-indigo-100 text-indigo-700 hover:bg-indigo-200">
-                                                <svg class="mr-1 h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.487a2.25 2.25 0 113.182 3.182L9.75 16.963 6 18l1.037-3.75 9.825-10.763z" />
-                                                </svg>
-                                                Editar
-                                            </a>
-                                            <button type="button"
-                                                class="delete-assignment-btn inline-flex items-center px-2 py-1 border border-transparent text-xs rounded-md bg-red-600 text-white hover:bg-red-700"
-                                                data-delete-url="{{ route('assignments.destroy', $assignment) }}"
-                                                title="Eliminar registro">
-                                                <svg class="mr-1 h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 7.5h12m-1.5 0-.663 10.608A2.25 2.25 0 0113.59 20.25h-3.18a2.25 2.25 0 01-2.247-2.142L7.5 7.5m3-3h3a1.5 1.5 0 011.5 1.5v1.5h-6V6a1.5 1.5 0 011.5-1.5z" />
-                                                </svg>
-                                                Eliminar
-                                            </button>
-                                        </td>
+                                                    <svg class="mr-1 h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.487a2.25 2.25 0 113.182 3.182L9.75 16.963 6 18l1.037-3.75 9.825-10.763z" />
+                                                    </svg>
+                                                    Editar
+                                                </a>
+                                                <button type="button"
+                                                    class="delete-assignment-btn inline-flex items-center px-2 py-1 border border-transparent text-xs rounded-md bg-red-600 text-white hover:bg-red-700"
+                                                    data-delete-url="{{ route('assignments.destroy', $assignment) }}"
+                                                    title="Eliminar registro">
+                                                    <svg class="mr-1 h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 7.5h12m-1.5 0-.663 10.608A2.25 2.25 0 0113.59 20.25h-3.18a2.25 2.25 0 01-2.247-2.142L7.5 7.5m3-3h3a1.5 1.5 0 011.5 1.5v1.5h-6V6a1.5 1.5 0 011.5-1.5z" />
+                                                    </svg>
+                                                    Eliminar
+                                                </button>
+                                            </td>
+                                        @endunless
                                     </tr>
                                     @empty
                                     <tr>
-                                        <td colspan="5" class="px-6 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
+                                        <td colspan="{{ auth()->user()?->isUser() ? 4 : 5 }}" class="px-6 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
                                             No se encontraron Listado .
                                         </td>
                                     </tr>
