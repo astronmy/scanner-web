@@ -9,8 +9,10 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 
 class TableAssignmentsListExport implements FromQuery, WithHeadings, WithMapping
 {
-    public function __construct(private array $filters = [])
-    {
+    public function __construct(
+        private array $filters = [],
+        private bool $includeObservations = true,
+    ) {
     }
 
     public function query()
@@ -36,23 +38,35 @@ class TableAssignmentsListExport implements FromQuery, WithHeadings, WithMapping
 
     public function headings(): array
     {
-        return [
+        $headings = [
             'ID',
             'Listado',
             'QR',
-            'Observaciones',
-            'Creado',
         ];
+
+        if ($this->includeObservations) {
+            $headings[] = 'Observaciones';
+        }
+
+        $headings[] = 'Creado';
+
+        return $headings;
     }
 
     public function map($row): array
     {
-        return [
+        $rowData = [
             $row->id,
             $row->table_number,
             $row->guest_name,
-            $row->observations ?? '',
-            $row->created_at ? $row->created_at->format('Y-m-d H:i:s') : '',
         ];
+
+        if ($this->includeObservations) {
+            $rowData[] = $row->observations ?? '';
+        }
+
+        $rowData[] = $row->created_at ? $row->created_at->format('Y-m-d H:i:s') : '';
+
+        return $rowData;
     }
 }

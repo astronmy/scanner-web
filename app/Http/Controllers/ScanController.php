@@ -12,6 +12,7 @@ class ScanController extends Controller
 {
     public function index(Request $request)
     {
+        $authUser = $request->user();
         $query = Scan::query()->with('user');
 
         if (session()->has('currentEvent')) {
@@ -22,7 +23,9 @@ class ScanController extends Controller
             $query->where('value', 'like', '%' . $request->value . '%');
         }
 
-        if ($request->filled('user_id')) {
+        if ($authUser->isUser()) {
+            $query->where('user_id', $authUser->id);
+        } elseif ($request->filled('user_id')) {
             $query->where('user_id', $request->user_id);
         }
 
@@ -38,7 +41,9 @@ class ScanController extends Controller
             ->orderByDesc('scanned_at')
             ->paginate(20);
 
-        $users = User::orderBy('name')->get(['id', 'name', 'email']);
+        $users = $authUser->isUser()
+            ? User::query()->whereKey($authUser->id)->get(['id', 'name', 'email'])
+            : User::orderBy('name')->get(['id', 'name', 'email']);
 
         return view('scans.index', compact('scans', 'users'));
     }
@@ -46,6 +51,9 @@ class ScanController extends Controller
     public function export(Request $request)
     {
         $filters = $request->only(['value', 'user_id', 'from', 'to']);
+        if ($request->user()->isUser()) {
+            $filters['user_id'] = $request->user()->id;
+        }
 
         $fileName = 'scans_' . now()->format('Ymd_His') . '.xlsx';
 

@@ -13,9 +13,7 @@ class EnsureElevatedAccess
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user()?->isUser()) {
-            abort(403);
-        }
+        
 
         return $next($request);
     }

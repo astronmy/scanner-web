@@ -41,8 +41,9 @@ class TableAssignmentController extends Controller
         $filters = $request->only(['table_number', 'guest_name']);
         $suffix = session('currentEvent') ? 'event_' . session('currentEvent') : 'sin_evento';
         $fileName = 'listado_' . $suffix . '_' . now()->format('Ymd_His') . '.xlsx';
+        $includeObservations = ! $request->user()->isUser();
 
-        return Excel::download(new TableAssignmentsListExport($filters), $fileName);
+        return Excel::download(new TableAssignmentsListExport($filters, $includeObservations), $fileName);
     }
 
     public function import(ImportTableAssignmentRequest $request)
