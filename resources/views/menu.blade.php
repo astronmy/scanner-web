@@ -18,27 +18,29 @@
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <a href="{{ route('assignments.index') }}"
+                @unless(auth()->user()?->isUser())
+                    <a href="{{ route('assignments.index') }}"
+                       class="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow hover:shadow-md transition-shadow">
+                        <div class="shrink-0 w-12 h-12 rounded-lg bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-violet-600 dark:text-violet-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.5 4.5h9A1.5 1.5 0 0118 6v12a1.5 1.5 0 01-1.5 1.5h-9A1.5 1.5 0 016 18V6a1.5 1.5 0 011.5-1.5zM9 9h6m-6 3h6m-6 3h4.5" />
+                            </svg>
+                        </div>
+                        <span class="font-semibold text-gray-800 dark:text-gray-100">Listado</span>
+                    </a>
+                @endunless
+
+                <a href="{{ route('scans.index') }}"
                    class="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow hover:shadow-md transition-shadow">
-                    <div class="shrink-0 w-12 h-12 rounded-lg bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center">
-                        <svg class="w-6 h-6 text-violet-600 dark:text-violet-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.5 4.5h9A1.5 1.5 0 0118 6v12a1.5 1.5 0 01-1.5 1.5h-9A1.5 1.5 0 016 18V6a1.5 1.5 0 011.5-1.5zM9 9h6m-6 3h6m-6 3h4.5" />
+                    <div class="shrink-0 w-12 h-12 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
+                        <svg class="w-6 h-6 text-emerald-600 dark:text-emerald-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.75 4.5h4.5v4.5h-4.5V4.5zM15.75 4.5h4.5v4.5h-4.5V4.5zM3.75 15.75h4.5v4.5h-4.5v-4.5zM13.5 13.5h1.875v1.875H13.5V13.5zM17.25 13.5h1.875v1.875H17.25V13.5zM13.5 17.25h1.875v1.875H13.5V17.25zM17.25 17.25h1.875v1.875H17.25V17.25z" />
                         </svg>
                     </div>
-                    <span class="font-semibold text-gray-800 dark:text-gray-100">Listado</span>
+                    <span class="font-semibold text-gray-800 dark:text-gray-100">Escaneos</span>
                 </a>
 
                 @unless(auth()->user()?->isUser())
-                    <a href="{{ route('scans.index') }}"
-                       class="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow hover:shadow-md transition-shadow">
-                        <div class="shrink-0 w-12 h-12 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
-                            <svg class="w-6 h-6 text-emerald-600 dark:text-emerald-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.75 4.5h4.5v4.5h-4.5V4.5zM15.75 4.5h4.5v4.5h-4.5V4.5zM3.75 15.75h4.5v4.5h-4.5v-4.5zM13.5 13.5h1.875v1.875H13.5V13.5zM17.25 13.5h1.875v1.875H17.25V13.5zM13.5 17.25h1.875v1.875H13.5V17.25zM17.25 17.25h1.875v1.875H17.25V17.25z" />
-                            </svg>
-                        </div>
-                        <span class="font-semibold text-gray-800 dark:text-gray-100">Escaneos</span>
-                    </a>
-
                     <a href="{{ route('users.index') }}"
                        class="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow hover:shadow-md transition-shadow">
                         <div class="shrink-0 w-12 h-12 rounded-lg bg-sky-100 dark:bg-sky-900/40 flex items-center justify-center">

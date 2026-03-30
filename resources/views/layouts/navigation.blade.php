@@ -126,9 +126,13 @@
         <div class="pt-2 pb-3 space-y-1">
             <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-base font-medium text-white/90 hover:text-white hover:bg-white/10">Dashboard</a>
             @if (session()->has('currentEvent'))
-                <a href="{{ route('assignments.index') }}" class="block px-4 py-2 text-base font-medium text-white/90 hover:text-white hover:bg-white/10">Listado</a>
+                @unless(auth()->user()?->isUser())
+                    <a href="{{ route('assignments.index') }}" class="block px-4 py-2 text-base font-medium text-white/90 hover:text-white hover:bg-white/10">Listado</a>
+                @endunless
                 <a href="{{ route('scans.index') }}" class="block px-4 py-2 text-base font-medium text-white/90 hover:text-white hover:bg-white/10">Escaneos</a>
-                <a href="{{ route('users.index') }}" class="block px-4 py-2 text-base font-medium text-white/90 hover:text-white hover:bg-white/10">Usuarios</a>
+                @unless(auth()->user()?->isUser())
+                    <a href="{{ route('users.index') }}" class="block px-4 py-2 text-base font-medium text-white/90 hover:text-white hover:bg-white/10">Usuarios</a>
+                @endunless
             @endif
         </div>
         <div class="pt-4 pb-3 border-t border-white/15">

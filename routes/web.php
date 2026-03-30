@@ -20,20 +20,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('assignments')
         ->name('assignments.')
+        ->middleware('elevated')
         ->controller(TableAssignmentController::class)
         ->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/export', 'export')->name('export');
-
-            Route::middleware('elevated')->group(function () {
-                Route::get('/form', 'importForm')->name('import-form');
-                Route::get('/template', 'downloadTemplate')->name('template');
-                Route::post('/import', 'import')->name('import');
-                Route::delete('/destroy-all', 'destroyAll')->name('destroy-all');
-                Route::get('/{assignment}/edit', 'edit')->name('edit');
-                Route::put('/{assignment}', 'update')->name('update');
-                Route::delete('/{assignment}', 'destroy')->name('destroy');
-            });
+            Route::get('/form', 'importForm')->name('import-form');
+            Route::get('/template', 'downloadTemplate')->name('template');
+            Route::post('/import', 'import')->name('import');
+            Route::delete('/destroy-all', 'destroyAll')->name('destroy-all');
+            Route::get('/{assignment}/edit', 'edit')->name('edit');
+            Route::put('/{assignment}', 'update')->name('update');
+            Route::delete('/{assignment}', 'destroy')->name('destroy');
         });
 
     Route::prefix('scanners')
@@ -48,13 +46,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('scans')
         ->name('scans.')
         ->controller(ScanController::class)
-        ->middleware('elevated')
         ->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/export', 'export')->name('export');
-            Route::get('/{scan}/edit', 'edit')->name('edit');
-            Route::put('/{scan}', 'update')->name('update');
-            Route::delete('/scans/{scan}', 'destroy')->name('destroy');
+
+            Route::middleware('elevated')->group(function () {
+                Route::get('/{scan}/edit', 'edit')->name('edit');
+                Route::put('/{scan}', 'update')->name('update');
+                Route::delete('/scans/{scan}', 'destroy')->name('destroy');
+            });
         });
 
     Route::middleware('elevated')->group(function () {
