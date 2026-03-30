@@ -27,15 +27,15 @@ class ScannerController extends Controller
 
         $userScans = $userScansQuery->where('user_id', $request->user()->id)->count();
 
+        $event = Event::findOrFail(session('currentEvent'));
+        $isStorageType = (int) ($event->scan_type ?? 1) === 2;
         $query = TableAssignment::query();
 
         if (session()->has('currentEvent')) {
             $query->where('event_id', session('currentEvent'));
         }
 
-        $total = $query->count();
-
-        $event = Event::findOrFail(session('currentEvent'));
+        $total = $isStorageType ? $scans : $query->count();
         $label = $event->label;
         $newButtonEnabled = (bool) $event->new_button_enabled;
         $messageNotFound = $event->message_not_found ?: 'La persona ya ingresó previamente';
@@ -44,23 +44,27 @@ class ScannerController extends Controller
         return view('scanners.start', compact('total', 'scans', 'userScans', 'label', 'newButtonEnabled', 'messageNotFound', 'autoStartEnabled'));
     }
     public function storage(Request $request) {
-
-        $query = TableAssignment::query();
-
-        if (session()->has('currentEvent')) {
-            $query->where('event_id', session('currentEvent'));
-        }
-
-        $search = $query->where('guest_name', $request->value)->first();
-
-        if(!$search) {
-            return response()->json([
-                'message' => 'No se encuentra el registro '. $request->value
-            ]);
-        }
-
         $event = Event::findOrFail(session('currentEvent'));
+        $isStorageType = (int) ($event->scan_type ?? 1) === 2;
         $checkDuplicity = (bool) ($event->check_duplicity ?? false);
+        $scannedValue = (string) $request->value;
+
+        $search = null;
+        if (! $isStorageType) {
+            $query = TableAssignment::query();
+
+            if (session()->has('currentEvent')) {
+                $query->where('event_id', session('currentEvent'));
+            }
+
+            $search = $query->where('guest_name', $scannedValue)->first();
+
+            if (! $search) {
+                return response()->json([
+                    'message' => 'No se encuentra el registro ' . $scannedValue
+                ]);
+            }
+        }
 
         $checkQry = Scan::query();
 
@@ -68,20 +72,24 @@ class ScannerController extends Controller
             $checkQry->where('event_id', session('currentEvent'));
         }
 
-        $alreadyScan = $checkQry->where('value', $search->guest_name)->exists();
+        $alreadyScan = $checkDuplicity
+            ? $checkQry->where('value', $scannedValue)->exists()
+            : false;
 
         $confirmDuplicate = $request->boolean('confirm_duplicate');
 
         if ($alreadyScan && $checkDuplicity && !$confirmDuplicate) {
             $scans = Scan::where('event_id', session('currentEvent'))->count();
-            $total = TableAssignment::where('event_id', session('currentEvent'))->count();
+            $total = $isStorageType
+                ? $scans
+                : TableAssignment::where('event_id', session('currentEvent'))->count();
             $userScans = Scan::where('event_id', session('currentEvent'))
                 ->where('user_id', $request->user()->id)
                 ->count();
 
             return response()->json([
-                'location' => $search->table_number,
-                'name' => $search->guest_name,
+                'location' => $isStorageType ? 'STORAGE' : $search->table_number,
+                'name' => $isStorageType ? $scannedValue : $search->guest_name,
                 'exists' => 1,
                 'requires_confirmation' => true,
                 'message' => 'Desea agregarlo nuevamente?',
@@ -91,23 +99,25 @@ class ScannerController extends Controller
             ]);
         }
 
-        if(! $alreadyScan || ($alreadyScan && $checkDuplicity && $confirmDuplicate)) {
+        if (! $alreadyScan || ($alreadyScan && $checkDuplicity && $confirmDuplicate)) {
             Scan::create([
                 'user_id'    => $request->user()->id,
                 'event_id'   => session('currentEvent'),
-                'value'      => $request->value,     
+                'value'      => $scannedValue,
                 'scanned_at' => now(),
                 'origin'     => Scan::ORIGIN_AUTOMATIC,
             ]);
         }
 
         $scans = Scan::where('event_id', session('currentEvent'))->count();
-        $total = TableAssignment::where('event_id', session('currentEvent'))->count();
+        $total = $isStorageType
+            ? $scans
+            : TableAssignment::where('event_id', session('currentEvent'))->count();
         $userScans = Scan::where('event_id', session('currentEvent'))->where('user_id', $request->user()->id)->count();
 
         return response()->json([
-                'location' => $search->table_number,
-                'name' => $search->guest_name,
+                'location' => $isStorageType ? 'STORAGE' : $search->table_number,
+                'name' => $isStorageType ? $scannedValue : $search->guest_name,
                 'exists' => (int) $alreadyScan,
                 'requires_confirmation' => false,
                 'scans' => $scans,
@@ -149,7 +159,11 @@ class ScannerController extends Controller
         ]);
 
         $scans = Scan::where('event_id', session('currentEvent'))->count();
-        $total = TableAssignment::where('event_id', session('currentEvent'))->count();
+        $event = Event::findOrFail(session('currentEvent'));
+        $isStorageType = (int) ($event->scan_type ?? 1) === 2;
+        $total = $isStorageType
+            ? $scans
+            : TableAssignment::where('event_id', session('currentEvent'))->count();
         $userScans = Scan::where('event_id', session('currentEvent'))
             ->where('user_id', $request->user()->id)
             ->count();
