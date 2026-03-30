@@ -38,7 +38,7 @@
 
                     {{-- Filtros --}}
                     <form method="GET" action="{{ route('scans.index') }}" class="mb-6 space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
                             {{-- Valor escaneado --}}
                             <div class="md:col-span-2">
                                 <label for="value" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
@@ -75,6 +75,23 @@
                                         {{ $user->name ?? $user->email }}
                                     </option>
                                     @endforeach
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="origin" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                                    Tipo de carga
+                                </label>
+                                <select
+                                    name="origin"
+                                    id="origin"
+                                    class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600
+                                           bg-white dark:bg-gray-900
+                                           text-gray-900 dark:text-gray-100
+                                           shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                                    <option value="">Todos</option>
+                                    <option value="{{ \App\Models\Scan::ORIGIN_MANUAL }}" @selected(request('origin') === \App\Models\Scan::ORIGIN_MANUAL)>Manual</option>
+                                    <option value="{{ \App\Models\Scan::ORIGIN_AUTOMATIC }}" @selected(request('origin') === \App\Models\Scan::ORIGIN_AUTOMATIC)>Automático</option>
                                 </select>
                             </div>
 

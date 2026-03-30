@@ -37,6 +37,10 @@ class ScanController extends Controller
             $query->whereDate('scanned_at', '<=', $request->to);
         }
 
+        if ($request->filled('origin') && in_array($request->origin, [Scan::ORIGIN_MANUAL, Scan::ORIGIN_AUTOMATIC], true)) {
+            $query->where('origin', $request->origin);
+        }
+
         $scans = $query
             ->orderByDesc('scanned_at')
             ->paginate(20);
@@ -50,7 +54,7 @@ class ScanController extends Controller
 
     public function export(Request $request)
     {
-        $filters = $request->only(['value', 'user_id', 'from', 'to']);
+        $filters = $request->only(['value', 'user_id', 'from', 'to', 'origin']);
         if ($request->user()->isUser()) {
             $filters['user_id'] = $request->user()->id;
         }

@@ -57,6 +57,10 @@ class ScansExport implements FromQuery, WithHeadings, WithMapping
             $query->whereDate('scans.scanned_at', '<=', $this->filters['to']);
         }
 
+        if (!empty($this->filters['origin']) && in_array($this->filters['origin'], [Scan::ORIGIN_MANUAL, Scan::ORIGIN_AUTOMATIC], true)) {
+            $query->where('scans.origin', $this->filters['origin']);
+        }
+
         return $query;
     }
 
