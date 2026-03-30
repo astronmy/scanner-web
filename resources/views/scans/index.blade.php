@@ -38,7 +38,7 @@
 
                     {{-- Filtros --}}
                     <form method="GET" action="{{ route('scans.index') }}" class="mb-6 space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div class="grid grid-cols-1 gap-4 {{ auth()->user()->isAdmin() ? 'md:grid-cols-5' : 'md:grid-cols-4' }}">
                             {{-- Valor escaneado --}}
                             <div class="md:col-span-2">
                                 <label for="value" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
@@ -57,26 +57,28 @@
                                            shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
                             </div>
 
-                            {{-- Usuario --}}
-                            <div>
-                                <label for="user_id" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
-                                    Usuario
-                                </label>
-                                <select
-                                    name="user_id"
-                                    id="user_id"
-                                    class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600
-                                           bg-white dark:bg-gray-900
-                                           text-gray-900 dark:text-gray-100
-                                           shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
-                                    <option value="">Todos</option>
-                                    @foreach($users as $user)
-                                    <option value="{{ $user->id }}" @selected(request('user_id')==$user->id)>
-                                        {{ $user->name ?? $user->email }}
-                                    </option>
-                                    @endforeach
-                                </select>
-                            </div>
+                            @if(auth()->user()->isAdmin())
+                                {{-- Usuario (solo admin) --}}
+                                <div>
+                                    <label for="user_id" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                                        Usuario
+                                    </label>
+                                    <select
+                                        name="user_id"
+                                        id="user_id"
+                                        class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600
+                                               bg-white dark:bg-gray-900
+                                               text-gray-900 dark:text-gray-100
+                                               shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                                        <option value="">Todos</option>
+                                        @foreach($users as $user)
+                                        <option value="{{ $user->id }}" @selected(request('user_id')==$user->id)>
+                                            {{ $user->name ?? $user->email }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endif
 
                             <div>
                                 <label for="origin" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">

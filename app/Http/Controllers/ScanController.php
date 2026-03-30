@@ -18,15 +18,15 @@ class ScanController extends Controller
         if (session()->has('currentEvent')) {
             $query->where('event_id', session('currentEvent'));
         }
-        
-        if ($request->filled('value')) {
-            $query->where('value', 'like', '%' . $request->value . '%');
-        }
 
-        if ($authUser->isUser()) {
+        if (! $authUser->isAdmin()) {
             $query->where('user_id', $authUser->id);
         } elseif ($request->filled('user_id')) {
             $query->where('user_id', $request->user_id);
+        }
+
+        if ($request->filled('value')) {
+            $query->where('value', 'like', '%' . $request->value . '%');
         }
 
         if ($request->filled('from')) {
@@ -45,9 +45,9 @@ class ScanController extends Controller
             ->orderByDesc('scanned_at')
             ->paginate(20);
 
-        $users = $authUser->isUser()
-            ? User::query()->whereKey($authUser->id)->get(['id', 'name', 'email'])
-            : User::orderBy('name')->get(['id', 'name', 'email']);
+        $users = $authUser->isAdmin()
+            ? User::orderBy('name')->get(['id', 'name', 'email'])
+            : collect();
 
         return view('scans.index', compact('scans', 'users'));
     }
@@ -55,7 +55,7 @@ class ScanController extends Controller
     public function export(Request $request)
     {
         $filters = $request->only(['value', 'user_id', 'from', 'to', 'origin']);
-        if ($request->user()->isUser()) {
+        if (! $request->user()->isAdmin()) {
             $filters['user_id'] = $request->user()->id;
         }
 
@@ -66,6 +66,10 @@ class ScanController extends Controller
 
     public function edit(Scan $scan)
     {
+        if (! request()->user()->isAdmin() && (int) $scan->user_id !== (int) request()->user()->id) {
+            abort(403);
+        }
+
         if ($scan->origin !== Scan::ORIGIN_MANUAL) {
             return redirect()
                 ->route('scans.index')
@@ -77,6 +81,10 @@ class ScanController extends Controller
 
     public function update(Request $request, Scan $scan)
     {
+        if (! $request->user()->isAdmin() && (int) $scan->user_id !== (int) $request->user()->id) {
+            abort(403);
+        }
+
         if ($scan->origin !== Scan::ORIGIN_MANUAL) {
             return redirect()
                 ->route('scans.index')
@@ -100,6 +108,10 @@ class ScanController extends Controller
 
     public function destroy(Scan $scan)
     {
+        if (! request()->user()->isAdmin() && (int) $scan->user_id !== (int) request()->user()->id) {
+            abort(403);
+        }
+
         $scan->delete();
 
         return redirect()
