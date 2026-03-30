@@ -89,7 +89,7 @@ class ScannerController extends Controller
                 ->count();
 
             return response()->json([
-                'location' => $isStorageType ? 'STORAGE' : $search->table_number,
+                'location' => $isStorageType ? '' : $search->table_number,
                 'name' => $isStorageType ? $scannedValue : $search->guest_name,
                 'exists' => 1,
                 'requires_confirmation' => true,
@@ -117,7 +117,7 @@ class ScannerController extends Controller
         $userScans = Scan::where('event_id', session('currentEvent'))->where('user_id', $request->user()->id)->count();
 
         return response()->json([
-                'location' => $isStorageType ? 'STORAGE' : $search->table_number,
+                'location' => $isStorageType ? '' : $search->table_number,
                 'name' => $isStorageType ? $scannedValue : $search->guest_name,
                 'exists' => (int) $alreadyScan,
                 'requires_confirmation' => false,

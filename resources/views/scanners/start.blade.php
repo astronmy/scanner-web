@@ -86,7 +86,7 @@
         <div class="p-6 sm:p-8">
             <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Cargar scan manual</h3>
             <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
-                Complet? el QR/valor y una observaci?n opcional.
+                Complete el QR/valor y una observaci?n opcional.
             </p>
             <form id="manual-scan-form" class="space-y-4">
                 <div>
@@ -207,7 +207,10 @@
                         let control = data.exists == 1
                             ? '<div class="mt-2 text-red-600 dark:text-red-400 font-semibold">{{ e($messageNotFound ?? "La persona ya ingres? previamente") }}</div>'
                             : '';
-                        let message = `<center>${data.name}<br>${label}: <br>${data.location}</center>${control}`;
+                        const locationBlock = data.location
+                            ? `<br>${label}: <br>${data.location}`
+                            : '';
+                        let message = `<center>${data.name}${locationBlock}</center>${control}`;
 
                         result.innerHTML = message;
                         status.textContent = '';
