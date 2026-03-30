@@ -52,6 +52,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/export', 'export')->name('export');
+            Route::get('/{scan}/edit', 'edit')->name('edit');
+            Route::put('/{scan}', 'update')->name('update');
             Route::delete('/scans/{scan}', 'destroy')->name('destroy');
         });
 

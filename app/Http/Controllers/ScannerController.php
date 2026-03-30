@@ -6,6 +6,7 @@ use App\Models\Event;
 use App\Models\Scan;
 use App\Models\TableAssignment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 
 class ScannerController extends Controller
@@ -136,7 +137,7 @@ class ScannerController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'value' => ['required', 'string', 'max:255'],
+            'value' => ['nullable', 'string', 'max:255'],
             'observation' => ['nullable', 'string', 'max:500'],
         ]);
 
@@ -147,8 +148,14 @@ class ScannerController extends Controller
         }
 
         $data = $validator->validated();
-        $value = trim($data['value']);
+        $value = trim((string) ($data['value'] ?? ''));
         $observation = trim((string) ($data['observation'] ?? ''));
+
+        if ($value === '' && $observation === '') {
+            $randomSuffix = strtoupper(Str::random(8));
+            $value = 'MANUAL-' . $randomSuffix;
+            $observation = 'OBS-' . $randomSuffix;
+        }
 
         $scan = Scan::create([
             'user_id' => $request->user()->id,

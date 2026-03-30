@@ -60,6 +60,40 @@ class ScanController extends Controller
         return Excel::download(new ScansExport($filters), $fileName);
     }
 
+    public function edit(Scan $scan)
+    {
+        if ($scan->origin !== Scan::ORIGIN_MANUAL) {
+            return redirect()
+                ->route('scans.index')
+                ->with('error', 'Solo se pueden editar scans manuales.');
+        }
+
+        return view('scans.edit', compact('scan'));
+    }
+
+    public function update(Request $request, Scan $scan)
+    {
+        if ($scan->origin !== Scan::ORIGIN_MANUAL) {
+            return redirect()
+                ->route('scans.index')
+                ->with('error', 'Solo se pueden editar scans manuales.');
+        }
+
+        $data = $request->validate([
+            'value' => ['required', 'string', 'max:255'],
+            'scanned_at' => ['nullable', 'date'],
+        ]);
+
+        $scan->update([
+            'value' => trim($data['value']),
+            'scanned_at' => $data['scanned_at'] ?? $scan->scanned_at,
+        ]);
+
+        return redirect()
+            ->route('scans.index')
+            ->with('success', 'Scan manual actualizado correctamente.');
+    }
+
     public function destroy(Scan $scan)
     {
         $scan->delete();

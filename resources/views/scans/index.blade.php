@@ -172,6 +172,16 @@
                                             {{ $scan->scanned_at?->format('d/m/Y H:i') ?? $scan->created_at?->format('d/m/Y H:i') }}
                                         </td>
                                         <td class="px-6 py-3 whitespace-nowrap text-right">
+                                            @if($scan->origin === \App\Models\Scan::ORIGIN_MANUAL)
+                                                <a href="{{ route('scans.edit', $scan) }}"
+                                                   class="inline-flex items-center px-3 py-1 mr-1 text-xs font-semibold rounded-md
+                                                          bg-indigo-100 text-indigo-700 hover:bg-indigo-200">
+                                                    <svg class="mr-1 h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.487a2.25 2.25 0 113.182 3.182L9.75 16.963 6 18l1.037-3.75 9.825-10.763z" />
+                                                    </svg>
+                                                    Editar
+                                                </a>
+                                            @endif
 
                                             <form action="{{ route('scans.destroy', $scan) }}"
                                                 method="POST"
