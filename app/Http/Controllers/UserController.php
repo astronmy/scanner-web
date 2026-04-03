@@ -11,9 +11,35 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    /**
+     * IDs de eventos asignados al usuario autenticado (alcance para listado/alta de usuarios).
+     *
+     * @return \Illuminate\Support\Collection<int, int>
+     */
+    protected function allowedEventIdsForActor(Request $request): \Illuminate\Support\Collection
+    {
+        return $request->user()
+            ->events()
+            ->pluck('id')
+            ->unique()
+            ->values();
+    }
+
     public function index(Request $request)
     {
         $query = User::query()->withCount('events');
+
+        $allowedEventIds = $this->allowedEventIdsForActor($request);
+
+        if ($allowedEventIds->isEmpty()) {
+            $query->whereRaw('1 = 0');
+        } else {
+            $query->whereHas('events', function ($q) use ($allowedEventIds) {
+                $q->whereIn('id', $allowedEventIds);
+            })->whereDoesntHave('events', function ($q) use ($allowedEventIds) {
+                $q->whereNotIn('id', $allowedEventIds);
+            });
+        }
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -36,10 +62,13 @@ class UserController extends Controller
         return view('users.index', compact('users', 'roles'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $roles  = RoleEnum::cases();
-        $events = Event::orderBy('start_date')->get();
+        $events = $request->user()
+            ->events()
+            ->orderBy('start_date')
+            ->get();
 
         return view('users.create', compact('roles', 'events'));
     }
@@ -47,6 +76,18 @@ class UserController extends Controller
     public function store(StoreUserRequest $request)
     {
         $data = $request->validated();
+
+        $allowedEventIds = $this->allowedEventIdsForActor($request)->all();
+        $eventIds = array_values(array_intersect($data['events'] ?? [], $allowedEventIds));
+
+        if ($eventIds === []) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->withErrors([
+                    'events' => 'Debe seleccionar al menos un evento dentro de su alcance.',
+                ]);
+        }
 
         // password se hashea solo por el cast "hashed" del modelo
         $user = User::create([
@@ -56,8 +97,7 @@ class UserController extends Controller
             'password' => $data['password'],
         ]);
 
-        // asociar eventos
-        $user->events()->sync($data['events'] ?? []);
+        $user->events()->sync($eventIds);
 
         return redirect()
             ->route('users.index')
