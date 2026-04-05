@@ -12,32 +12,39 @@ use Illuminate\Http\Request;
 class UserController extends Controller
 {
     /**
-     * IDs de eventos asignados al usuario autenticado (alcance para listado/alta de usuarios).
+     * Evento activo en sesión (dashboard), solo si el actor está asignado a ese evento.
+     * Listado y ABM de usuarios se limitan a ese evento.
      *
      * @return \Illuminate\Support\Collection<int, int>
      */
-    protected function allowedEventIdsForActor(Request $request): \Illuminate\Support\Collection
+    protected function scopedEventIdsForUserManagement(Request $request): \Illuminate\Support\Collection
     {
-        return $request->user()
+        if (! session()->has('currentEvent')) {
+            return collect();
+        }
+
+        $eventId = (int) session('currentEvent');
+
+        $hasAccess = $request->user()
             ->events()
-            ->pluck('events.id')
-            ->unique()
-            ->values();
+            ->where('events.id', $eventId)
+            ->exists();
+
+        return $hasAccess ? collect([$eventId]) : collect();
     }
 
     public function index(Request $request)
     {
         $query = User::query()->withCount('events');
 
-        $allowedEventIds = $this->allowedEventIdsForActor($request);
+        $scopedIds = $this->scopedEventIdsForUserManagement($request);
 
-        if ($allowedEventIds->isEmpty()) {
+        if ($scopedIds->isEmpty()) {
             $query->whereRaw('1 = 0');
         } else {
-            $query->whereHas('events', function ($q) use ($allowedEventIds) {
-                $q->whereIn('events.id', $allowedEventIds);
-            })->whereDoesntHave('events', function ($q) use ($allowedEventIds) {
-                $q->whereNotIn('events.id', $allowedEventIds);
+            $eventId = (int) $scopedIds->first();
+            $query->whereHas('events', function ($q) use ($eventId) {
+                $q->where('events.id', $eventId);
             });
         }
 
@@ -64,10 +71,17 @@ class UserController extends Controller
 
     public function create(Request $request)
     {
+        $scopedIds = $this->scopedEventIdsForUserManagement($request);
+        if ($scopedIds->isEmpty()) {
+            return redirect()
+                ->route('users.index')
+                ->with('error', 'Seleccioná un evento en el dashboard para gestionar usuarios.');
+        }
+
         $roles  = RoleEnum::cases();
-        $events = $request->user()
-            ->events()
-            ->orderBy('events.start_date')
+        $events = Event::query()
+            ->whereIn('id', $scopedIds)
+            ->orderBy('start_date')
             ->get();
 
         return view('users.create', compact('roles', 'events'));
@@ -77,7 +91,7 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
-        $allowedEventIds = $this->allowedEventIdsForActor($request)->all();
+        $allowedEventIds = $this->scopedEventIdsForUserManagement($request)->all();
         $eventIds = array_values(array_intersect($data['events'] ?? [], $allowedEventIds));
 
         if ($eventIds === []) {
@@ -85,7 +99,7 @@ class UserController extends Controller
                 ->back()
                 ->withInput()
                 ->withErrors([
-                    'events' => 'Debe seleccionar al menos un evento dentro de su alcance.',
+                    'events' => 'Debe asignar el usuario al evento actual (elegí un evento en el dashboard).',
                 ]);
         }
 
@@ -104,10 +118,25 @@ class UserController extends Controller
             ->with('success', 'Usuario creado correctamente.');
     }
 
-    public function edit(User $user)
+    public function edit(Request $request, User $user)
     {
+        $scopedIds = $this->scopedEventIdsForUserManagement($request);
+        if ($scopedIds->isEmpty()) {
+            return redirect()
+                ->route('users.index')
+                ->with('error', 'Seleccioná un evento en el dashboard para gestionar usuarios.');
+        }
+
+        $eventId = (int) $scopedIds->first();
+        if (! $user->events()->where('events.id', $eventId)->exists()) {
+            abort(403);
+        }
+
         $roles  = RoleEnum::cases();
-        $events = Event::orderBy('start_date')->get();
+        $events = Event::query()
+            ->whereIn('id', $scopedIds)
+            ->orderBy('start_date')
+            ->get();
         $userEventIds = $user->events()->pluck('events.id')->toArray();
 
         return view('users.edit', compact('user', 'roles', 'events', 'userEventIds'));
@@ -115,6 +144,18 @@ class UserController extends Controller
 
     public function update(UpdateUserRequest $request, User $user)
     {
+        $scopedIds = $this->scopedEventIdsForUserManagement($request);
+        if ($scopedIds->isEmpty()) {
+            return redirect()
+                ->route('users.index')
+                ->with('error', 'Seleccioná un evento en el dashboard para gestionar usuarios.');
+        }
+
+        $eventId = (int) $scopedIds->first();
+        if (! $user->events()->where('events.id', $eventId)->exists()) {
+            abort(403);
+        }
+
         $data = $request->validated();
 
         $user->name  = $data['name'];
@@ -127,15 +168,34 @@ class UserController extends Controller
 
         $user->save();
 
-        $user->events()->sync($data['events'] ?? []);
+        $allowedEventIds = $scopedIds->all();
+        $fromForm = array_values(array_intersect($data['events'] ?? [], $allowedEventIds));
+        $otherIds = $user->events()->where('events.id', '!=', $eventId)->pluck('events.id')->all();
+        $merged = array_values(array_unique(array_merge($otherIds, $fromForm)));
+
+        if ($merged === []) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->withErrors([
+                    'events' => 'El usuario debe tener al menos un evento asignado.',
+                ]);
+        }
+
+        $user->events()->sync($merged);
 
         return redirect()
             ->route('users.index')
             ->with('success', 'Usuario actualizado correctamente.');
     }
 
-    public function destroy(User $user)
+    public function destroy(Request $request, User $user)
     {
+        $scopedIds = $this->scopedEventIdsForUserManagement($request);
+        if ($scopedIds->isEmpty() || ! $user->events()->where('events.id', (int) $scopedIds->first())->exists()) {
+            abort(403);
+        }
+
         // opcional: evitar borrarse a sí mismo
         if (auth()->id() === $user->id) {
             return redirect()

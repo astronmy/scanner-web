@@ -112,11 +112,24 @@
                             </div>
                         </div>
 
-                        {{-- Eventos --}}
+                        {{-- Evento (siempre el evento elegido en el dashboard) --}}
                         <div>
-                            <label for="event-search-create" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
-                                Eventos asignados <span class="text-red-500">*</span>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                                Evento <span class="text-red-500">*</span>
                             </label>
+                            @if($events->count() === 1)
+                                @php $ev = $events->first(); @endphp
+                                <input type="hidden" name="events[]" value="{{ $ev->id }}">
+                                <p class="text-sm text-gray-800 dark:text-gray-200 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3 py-2">
+                                    {{ $ev->name }}
+                                    <span class="text-gray-500 dark:text-gray-400">
+                                        ({{ $ev->start_date?->format('d/m/Y') }} – {{ $ev->end_date?->format('d/m/Y') }})
+                                    </span>
+                                </p>
+                                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                    El usuario se asigna solo al evento que tenés seleccionado en el menú.
+                                </p>
+                            @else
                             <input
                                 type="text"
                                 id="event-search-create"
@@ -139,8 +152,9 @@
                                 @endforeach
                             </div>
                             <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                Seleccioná uno o más eventos. Es obligatorio para cualquier rol (admin y user).
+                                Solo podés asignar eventos dentro del alcance actual.
                             </p>
+                            @endif
                             @error('events')
                                 <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                             @enderror

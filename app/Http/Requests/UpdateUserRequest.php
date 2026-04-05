@@ -27,7 +27,7 @@ class UpdateUserRequest extends FormRequest
             ],
             'role'                  => ['required', Rule::enum(RoleEnum::class)],
             'password'              => ['nullable', 'string', 'min:8', 'confirmed'],
-            'events'                => ['required', 'array', 'min:1'],
+            'events'                => ['nullable', 'array'],
             'events.*'              => ['integer', 'exists:events,id'],
         ];
     }
@@ -45,9 +45,6 @@ class UpdateUserRequest extends FormRequest
 
     public function messages(): array
     {
-        return [
-            'events.required' => 'Debe seleccionar al menos un evento.',
-            'events.min'      => 'Debe seleccionar al menos un evento.',
-        ];
+        return [];
     }
 }

@@ -141,7 +141,7 @@
                                 @endforeach
                             </div>
                             <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                Seleccioná uno o más eventos. Es obligatorio para cualquier rol (admin y user).
+                                Podés quitar o mantener el acceso al evento actual. Las asignaciones a otros eventos no se muestran aquí pero se conservan.
                             </p>
                             @error('events')
                                 <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
