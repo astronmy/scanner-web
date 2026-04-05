@@ -42,7 +42,7 @@ class ScannerController extends Controller
         $messageNotFound = $event->message_not_found ?: 'La persona ya ingresó previamente';
         $autoStartEnabled = (bool) ($event->autostart ?? false);
 
-        return view('scanners.start', compact('total', 'scans', 'userScans', 'label', 'newButtonEnabled', 'messageNotFound', 'autoStartEnabled'));
+        return view('scanners.start', compact('total', 'scans', 'userScans', 'label', 'newButtonEnabled', 'messageNotFound', 'autoStartEnabled', 'isStorageType'));
     }
     public function storage(Request $request) {
         $event = Event::findOrFail(session('currentEvent'));

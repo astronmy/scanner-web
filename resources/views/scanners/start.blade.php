@@ -86,7 +86,7 @@
         <div class="p-6 sm:p-8">
             <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Cargar scan manual</h3>
             <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
-                Complete el QR/valor y una observación opcional.
+                Complete el QR/valor y una observaci?n opcional.
             </p>
             <form id="manual-scan-form" class="space-y-4">
                 <div>
@@ -100,7 +100,7 @@
                 </div>
                 <div>
                     <label for="manual-observation" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
-                        Observación (opcional)
+                        Observaci?n (opcional)
                     </label>
                     <textarea id="manual-observation"
                               name="observation"
@@ -150,6 +150,7 @@
             const qrRegionId = "qr-reader";
             const html5QrCode = new Html5Qrcode(qrRegionId);
             const autoStartEnabled = @json($autoStartEnabled ?? false);
+            const isStorageType = @json($isStorageType ?? false);
 
             const status = document.getElementById('qr-status');
             const result = document.getElementById('qr-result');
@@ -165,6 +166,14 @@
             const label = document.getElementById('label').value;
             let isScanning = false;
             let pendingDuplicateValue = null;
+            let lastStorageScanDisplay = null;
+
+            function applyStorageResultDisplay(html) {
+                if (isStorageType) {
+                    lastStorageScanDisplay = html;
+                }
+                result.innerHTML = html;
+            }
 
             async function sendScan(decodedText, confirmDuplicate = false) {
                 let shouldAutoRestart = autoStartEnabled;
@@ -203,7 +212,9 @@
                         return;
                     }
 
-                    if (data && data.location && data.name) {
+                    const isSuccessfulScanResponse = data && typeof data.scans === 'number' && data.name != null && String(data.name) !== '';
+
+                    if (isSuccessfulScanResponse) {
                         let control = data.exists == 1
                             ? '<div class="mt-2 text-red-600 dark:text-red-400 font-semibold">{{ e($messageNotFound ?? "La persona ya ingres? previamente") }}</div>'
                             : '';
@@ -212,7 +223,7 @@
                             : '';
                         let message = `<center>${data.name}${locationBlock}</center>${control}`;
 
-                        result.innerHTML = message;
+                        applyStorageResultDisplay(message);
                         status.textContent = '';
                         result.classList.remove('text-red-600', 'dark:text-red-400');
                         result.classList.add('text-emerald-600', 'dark:text-emerald-400');
@@ -246,7 +257,11 @@
             }
 
             function triggerNewScan() {
-                result.textContent = '';
+                if (isStorageType && lastStorageScanDisplay) {
+                    result.innerHTML = lastStorageScanDisplay;
+                } else {
+                    result.textContent = '';
+                }
                 status.textContent = 'Apunt\u00e1 la c\u00e1mara al c\u00f3digo QR';
 
                 if (isScanning) {
@@ -349,7 +364,11 @@
                         const obs = data.location && data.location !== '?'
                             ? `<div class="mt-1 text-sm text-gray-700 dark:text-gray-300">${data.location}</div>`
                             : '';
-                        result.innerHTML = `<center>${data.name}<br>${label}: <br>MANUAL</center>${obs}`;
+                        const manualHtml = `<center>${data.name}<br>${label}: <br>MANUAL</center>${obs}`;
+                        if (isStorageType) {
+                            lastStorageScanDisplay = manualHtml;
+                        }
+                        result.innerHTML = manualHtml;
                         result.classList.remove('text-red-600', 'dark:text-red-400');
                         result.classList.add('text-emerald-600', 'dark:text-emerald-400');
                         status.textContent = '';
