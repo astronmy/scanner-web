@@ -20,7 +20,7 @@ class UserController extends Controller
     {
         return $request->user()
             ->events()
-            ->pluck('id')
+            ->pluck('events.id')
             ->unique()
             ->values();
     }
@@ -35,9 +35,9 @@ class UserController extends Controller
             $query->whereRaw('1 = 0');
         } else {
             $query->whereHas('events', function ($q) use ($allowedEventIds) {
-                $q->whereIn('id', $allowedEventIds);
+                $q->whereIn('events.id', $allowedEventIds);
             })->whereDoesntHave('events', function ($q) use ($allowedEventIds) {
-                $q->whereNotIn('id', $allowedEventIds);
+                $q->whereNotIn('events.id', $allowedEventIds);
             });
         }
 
@@ -67,7 +67,7 @@ class UserController extends Controller
         $roles  = RoleEnum::cases();
         $events = $request->user()
             ->events()
-            ->orderBy('start_date')
+            ->orderBy('events.start_date')
             ->get();
 
         return view('users.create', compact('roles', 'events'));
