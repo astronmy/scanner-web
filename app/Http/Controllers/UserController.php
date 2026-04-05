@@ -12,8 +12,9 @@ use Illuminate\Http\Request;
 class UserController extends Controller
 {
     /**
-     * Evento activo en sesión (dashboard), solo si el actor está asignado a ese evento.
-     * Listado y ABM de usuarios se limitan a ese evento.
+     * Evento activo en sesión (dashboard). Listado y ABM se limitan a ese evento.
+     * Admin: basta con que el evento exista (alineado con DashboardController::selectEvent).
+     * Resto: debe estar asignado al evento en event_user.
      *
      * @return \Illuminate\Support\Collection<int, int>
      */
@@ -24,8 +25,17 @@ class UserController extends Controller
         }
 
         $eventId = (int) session('currentEvent');
+        $user = $request->user();
 
-        $hasAccess = $request->user()
+        // Misma regla que DashboardController::selectEvent: el admin puede operar en
+        // cualquier evento elegido aunque no figure en event_user.
+        if ($user->isAdmin()) {
+            return Event::query()->whereKey($eventId)->exists()
+                ? collect([$eventId])
+                : collect();
+        }
+
+        $hasAccess = $user
             ->events()
             ->where('events.id', $eventId)
             ->exists();
