@@ -6,6 +6,7 @@ use App\Exports\ScansExport;
 use App\Models\Scan;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ScanController extends Controller
@@ -13,36 +14,42 @@ class ScanController extends Controller
     public function index(Request $request)
     {
         $authUser = $request->user();
-        $query = Scan::query()->with('user');
+        $query = Scan::query()
+            ->with('user')
+            ->leftJoin('table_assignments as ta', function ($join) {
+                $join->on('ta.event_id', '=', 'scans.event_id')
+                    ->on('ta.guest_name', '=', 'scans.value');
+            })
+            ->select('scans.*', DB::raw('ta.observations as assignment_observations'));
 
         if (session()->has('currentEvent')) {
-            $query->where('event_id', session('currentEvent'));
+            $query->where('scans.event_id', session('currentEvent'));
         }
 
         if (! $authUser->isAdmin()) {
-            $query->where('user_id', $authUser->id);
+            $query->where('scans.user_id', $authUser->id);
         } elseif ($request->filled('user_id')) {
-            $query->where('user_id', $request->user_id);
+            $query->where('scans.user_id', $request->user_id);
         }
 
         if ($request->filled('value')) {
-            $query->where('value', 'like', '%' . $request->value . '%');
+            $query->where('scans.value', 'like', '%' . $request->value . '%');
         }
 
         if ($request->filled('from')) {
-            $query->whereDate('scanned_at', '>=', $request->from);
+            $query->whereDate('scans.scanned_at', '>=', $request->from);
         }
 
         if ($request->filled('to')) {
-            $query->whereDate('scanned_at', '<=', $request->to);
+            $query->whereDate('scans.scanned_at', '<=', $request->to);
         }
 
         if ($request->filled('origin') && in_array($request->origin, [Scan::ORIGIN_MANUAL, Scan::ORIGIN_AUTOMATIC], true)) {
-            $query->where('origin', $request->origin);
+            $query->where('scans.origin', $request->origin);
         }
 
         $scans = $query
-            ->orderByDesc('scanned_at')
+            ->orderByDesc('scans.scanned_at')
             ->paginate(20);
 
         $users = $authUser->isAdmin()

@@ -165,6 +165,9 @@
                                             Valor
                                         </th>
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider w-1/3">
+                                            Observaciones
+                                        </th>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider w-1/3">
                                             Usuario
                                         </th>
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider w-1/4">
@@ -185,6 +188,9 @@
                                         </td>
                                         <td class="px-6 py-3 text-gray-700 dark:text-gray-200 whitespace-normal break-words">
                                             {{ $scan->value }}
+                                        </td>
+                                        <td class="px-6 py-3 text-gray-700 dark:text-gray-200 whitespace-normal break-words">
+                                            {{ $scan->assignment_observations ?? '—' }}
                                         </td>
                                         <td class="px-6 py-3 text-gray-700 dark:text-gray-200 whitespace-normal break-words">
                                             {{ $scan->user?->name ?? $scan->user?->email ?? '—' }}
@@ -229,7 +235,7 @@
                                     </tr>
                                     @empty
                                     <tr>
-                                        <td colspan="{{ auth()->user()?->isUser() ? 4 : 5 }}" class="px-6 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
+                                        <td colspan="{{ auth()->user()?->isUser() ? 5 : 6 }}" class="px-6 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
                                             No se encontraron registros de scans.
                                         </td>
                                     </tr>
