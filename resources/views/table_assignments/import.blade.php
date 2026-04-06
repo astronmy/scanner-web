@@ -25,7 +25,7 @@
                             Descargar modelo Excel
                         </a>
                         <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                            Encabezados esperados: <code>mesa</code>, <code>nombre</code>, <code>observaciones</code>.
+                            Encabezados esperados: <code>ID</code>, <code>QR</code>, <code>observaciones</code> (tambi&eacute;n se acepta el modelo antiguo <code>mesa</code> / <code>nombre</code>).
                         </p>
                     </div>
 

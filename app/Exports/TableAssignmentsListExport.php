@@ -39,8 +39,8 @@ class TableAssignmentsListExport implements FromQuery, WithHeadings, WithMapping
     public function headings(): array
     {
         $headings = [
+            'Id registro',
             'ID',
-            'Listado',
             'QR',
         ];
 

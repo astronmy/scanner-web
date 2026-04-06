@@ -11,8 +11,8 @@ class TableAssignmentsTemplateExport implements FromArray, WithHeadings, WithTit
     public function headings(): array
     {
         return [
-            'mesa',
-            'nombre',
+            'ID',
+            'QR',
             'observaciones',
         ];
     }

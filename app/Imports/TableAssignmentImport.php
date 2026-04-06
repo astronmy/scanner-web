@@ -11,10 +11,10 @@ class TableAssignmentImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
 
-        if (
-            (!isset($row['mesa']) || $row['mesa'] === null) &&
-            (!isset($row['nombre'])   || $row['nombre'] === null)
-        ) {
+        $tableNumber = $row['mesa'] ?? $row['listado'] ?? $row['id'] ?? null;
+        $guestName = $row['nombre'] ?? $row['qr'] ?? null;
+
+        if (($tableNumber === null || $tableNumber === '') && ($guestName === null || $guestName === '')) {
             return null;
         }
 
@@ -22,8 +22,8 @@ class TableAssignmentImport implements ToModel, WithHeadingRow
         $observations = $row['observaciones'] ?? $row['observations'] ?? null;
 
         return new TableAssignment([
-            'table_number' => $row['mesa'],
-            'guest_name'   => $row['nombre'],
+            'table_number' => $tableNumber,
+            'guest_name'   => $guestName,
             'observations' => $observations ?: null,
             'event_id' => $eventId
         ]);
