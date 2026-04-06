@@ -136,6 +136,10 @@
                                             QR
                                         </th>
                                         <th scope="col"
+                                            class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider w-1/3">
+                                            Observaciones
+                                        </th>
+                                        <th scope="col"
                                             class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider w-40">
                                             Creado
                                         </th>
@@ -159,6 +163,9 @@
                                         </td>
                                         <td class="px-6 py-3 text-gray-700 dark:text-gray-200 whitespace-normal break-words">
                                             {{ $assignment->guest_name }}
+                                        </td>
+                                        <td class="px-6 py-3 text-gray-700 dark:text-gray-200 whitespace-normal break-words">
+                                            {{ $assignment->observations ?? '—' }}
                                         </td>
                                         <td class="px-6 py-3 whitespace-nowrap text-gray-500 dark:text-gray-400 text-xs">
                                             {{ $assignment->created_at?->format('d/m/Y H:i') }}
@@ -187,7 +194,7 @@
                                     </tr>
                                     @empty
                                     <tr>
-                                        <td colspan="{{ auth()->user()?->isUser() ? 4 : 5 }}" class="px-6 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
+                                        <td colspan="{{ auth()->user()?->isUser() ? 5 : 6 }}" class="px-6 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
                                             No se encontraron Listado .
                                         </td>
                                     </tr>
