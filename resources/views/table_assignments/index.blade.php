@@ -61,7 +61,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div>
                                 <label for="table_number" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
-                                    Listado
+                                    ID
                                 </label>
                                 <input
                                     type="text"
@@ -125,11 +125,11 @@
                                     <tr>
                                         <th scope="col"
                                             class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider w-20">
-                                            ID
+                                            ID Registro
                                         </th>
                                         <th scope="col"
                                             class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider w-24">
-                                            Listado
+                                            ID
                                         </th>
                                         <th scope="col"
                                             class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider w-1/2">
