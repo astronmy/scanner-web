@@ -421,7 +421,7 @@
     <div class="fixed bottom-6 right-6">
         <div id="userTotals"
             class="w-16 h-16 rounded-full
-               bg-red-600 text-white
+               bg-[#FBB52F] text-gray-900
                flex items-center justify-center
                text-lg font-bold shadow-xl
                border-2 border-white dark:border-gray-800
@@ -435,7 +435,7 @@
             class="min-w-[90px] h-14
                px-4
                rounded-xl
-               bg-emerald-600 text-white
+               bg-[#406075] text-white
                flex items-center justify-center
                text-base font-bold
                shadow-xl
