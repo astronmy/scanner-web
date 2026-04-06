@@ -100,11 +100,15 @@ class ScanController extends Controller
 
         $data = $request->validate([
             'value' => ['required', 'string', 'max:255'],
+            'observations' => ['nullable', 'string', 'max:500'],
             'scanned_at' => ['nullable', 'date'],
         ]);
 
+        $observations = trim((string) ($data['observations'] ?? ''));
+
         $scan->update([
             'value' => trim($data['value']),
+            'observations' => $observations !== '' ? $observations : null,
             'scanned_at' => $data['scanned_at'] ?? $scan->scanned_at,
         ]);
 

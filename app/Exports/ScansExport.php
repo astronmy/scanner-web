@@ -133,7 +133,7 @@ class ScansExport implements FromQuery, WithHeadings, WithMapping
 
         return array_merge($row, [
             $scan->origin ?: Scan::ORIGIN_AUTOMATIC,
-            $scan->assignment_observations ?? '',
+            $scan->observations ?? $scan->assignment_observations ?? '',
             $user?->name ?? '',
             $user?->email ?? '',
             $datetime ? $datetime->format('Y-m-d H:i:s') : '',

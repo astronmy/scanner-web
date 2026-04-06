@@ -48,7 +48,7 @@ class EventScansSheet implements FromCollection, WithHeadings, WithTitle
 
                 return array_merge($row, [
                     'tipo' => $scan->origin ?: Scan::ORIGIN_AUTOMATIC,
-                    'observacion' => $scan->assignment_observations ?? '',
+                    'observacion' => $scan->observations ?? $scan->assignment_observations ?? '',
                     'usuario' => $user?->name ?? '',
                     'email' => $user?->email ?? '',
                     'fecha_hora' => $datetime ? $datetime->format('Y-m-d H:i:s') : '',

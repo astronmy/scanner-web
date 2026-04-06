@@ -190,7 +190,7 @@
                                             {{ $scan->value }}
                                         </td>
                                         <td class="px-6 py-3 text-gray-700 dark:text-gray-200 whitespace-normal break-words">
-                                            {{ $scan->assignment_observations ?? '—' }}
+                                            {{ $scan->observations ?? $scan->assignment_observations ?? '—' }}
                                         </td>
                                         <td class="px-6 py-3 text-gray-700 dark:text-gray-200 whitespace-normal break-words">
                                             {{ $scan->user?->name ?? $scan->user?->email ?? '—' }}

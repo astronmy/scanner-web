@@ -161,6 +161,7 @@ class ScannerController extends Controller
             'user_id' => $request->user()->id,
             'event_id' => session('currentEvent'),
             'value' => $value,
+            'observations' => $observation !== '' ? $observation : null,
             'scanned_at' => now(),
             'origin' => Scan::ORIGIN_MANUAL,
         ]);
