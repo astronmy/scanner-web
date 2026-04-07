@@ -251,7 +251,7 @@
                     if (shouldAutoRestart) {
                         setTimeout(() => {
                             triggerNewScan();
-                        }, 700);
+                        }, 1000);
                     }
                 }
             }
@@ -414,7 +414,7 @@
                     if (autoStartEnabled) {
                         setTimeout(() => {
                             triggerNewScan();
-                        }, 700);
+                        }, 1000);
                     }
                 });
             }

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ScansExport;
-use App\Models\Event;
 use App\Models\Scan;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -79,12 +78,6 @@ class ScanController extends Controller
             abort(403);
         }
 
-        if (! $this->canEditScan($scan)) {
-            return redirect()
-                ->route('scans.index')
-                ->with('error', 'Solo se pueden editar scans manuales, excepto en eventos STORAGE.');
-        }
-
         return view('scans.edit', compact('scan'));
     }
 
@@ -92,12 +85,6 @@ class ScanController extends Controller
     {
         if (! $request->user()->isAdmin() && (int) $scan->user_id !== (int) $request->user()->id) {
             abort(403);
-        }
-
-        if (! $this->canEditScan($scan)) {
-            return redirect()
-                ->route('scans.index')
-                ->with('error', 'Solo se pueden editar scans manuales, excepto en eventos STORAGE.');
         }
 
         $data = $request->validate([
@@ -117,19 +104,6 @@ class ScanController extends Controller
         return redirect()
             ->route('scans.index')
             ->with('success', 'Scan actualizado correctamente.');
-    }
-
-    private function canEditScan(Scan $scan): bool
-    {
-        if ($scan->origin === Scan::ORIGIN_MANUAL) {
-            return true;
-        }
-
-        $scanType = Event::query()
-            ->whereKey($scan->event_id)
-            ->value('scan_type');
-
-        return (int) ($scanType ?? 1) === 2;
     }
 
     public function destroy(Scan $scan)
