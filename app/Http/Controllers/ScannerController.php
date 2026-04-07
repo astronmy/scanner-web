@@ -8,6 +8,7 @@ use App\Models\TableAssignment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ScannerController extends Controller
 {
@@ -137,6 +138,45 @@ class ScannerController extends Controller
 
     }
 
+    public function searchAssignments(Request $request)
+    {
+        if (! session()->has('currentEvent')) {
+            return response()->json(['data' => []]);
+        }
+
+        $event = Event::find(session('currentEvent'));
+        if (! $event || (int) ($event->scan_type ?? 1) === 2) {
+            return response()->json(['data' => []]);
+        }
+
+        $q = trim((string) $request->query('q', ''));
+
+        $query = TableAssignment::query()
+            ->where('event_id', session('currentEvent'))
+            ->select(['id', 'guest_name', 'table_number', 'observations'])
+            ->orderBy('table_number')
+            ->orderBy('guest_name')
+            ->limit(50);
+
+        if ($q !== '') {
+            $query->where(function ($w) use ($q) {
+                $w->where('guest_name', 'like', '%' . $q . '%')
+                    ->orWhere('table_number', 'like', '%' . $q . '%');
+            });
+        }
+
+        $data = $query->get()->map(static function (TableAssignment $a) {
+            return [
+                'id' => $a->id,
+                'guest_name' => $a->guest_name,
+                'table_number' => $a->table_number,
+                'observations' => $a->observations,
+            ];
+        });
+
+        return response()->json(['data' => $data]);
+    }
+
     public function storeManual(Request $request)
     {
         if (!session()->has('currentEvent')) {
@@ -145,9 +185,16 @@ class ScannerController extends Controller
             ], 422);
         }
 
+        $eventId = (int) session('currentEvent');
+
         $validator = Validator::make($request->all(), [
             'value' => ['nullable', 'string', 'max:255'],
             'observation' => ['nullable', 'string', 'max:500'],
+            'table_assignment_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('table_assignments', 'id')->where('event_id', $eventId),
+            ],
         ]);
 
         if ($validator->fails()) {
@@ -157,58 +204,87 @@ class ScannerController extends Controller
         }
 
         $data = $validator->validated();
-        $value = trim((string) ($data['value'] ?? ''));
-        $observation = trim((string) ($data['observation'] ?? ''));
-
-        if ($value === '' && $observation === '') {
-            $randomSuffix = strtoupper(Str::random(8));
-            $value = 'MANUAL-' . $randomSuffix;
-            $observation = 'OBS-' . $randomSuffix;
-        }
-
-        $event = Event::findOrFail(session('currentEvent'));
+        $event = Event::findOrFail($eventId);
         $isStorageType = (int) ($event->scan_type ?? 1) === 2;
 
-        $manualPayload = [
-            'user_id' => $request->user()->id,
-            'event_id' => session('currentEvent'),
-            'value' => $value,
-            'scanned_at' => now(),
-            'origin' => Scan::ORIGIN_MANUAL,
-        ];
-
-        if (! $isStorageType) {
-            $assignment = TableAssignment::query()
-                ->where('event_id', session('currentEvent'))
-                ->where('guest_name', $value)
+        $tableAssignmentId = isset($data['table_assignment_id']) ? (int) $data['table_assignment_id'] : null;
+        $picked = null;
+        if ($tableAssignmentId && ! $isStorageType) {
+            $picked = TableAssignment::query()
+                ->where('id', $tableAssignmentId)
+                ->where('event_id', $eventId)
                 ->first();
+        }
 
-            if ($assignment) {
-                $manualPayload['id_list'] = Str::limit((string) $assignment->table_number, 200, '');
-                $manualPayload['qr_list'] = Str::limit((string) $assignment->guest_name, 200, '');
-                $listObs = $assignment->observations;
-                $manualPayload['observations'] = filled($listObs) ? trim((string) $listObs) : null;
+        if ($picked) {
+            $value = trim((string) $picked->guest_name);
+            $listObs = $picked->observations;
+            $manualPayload = [
+                'user_id' => $request->user()->id,
+                'event_id' => $eventId,
+                'value' => $value,
+                'id_list' => Str::limit((string) $picked->table_number, 200, ''),
+                'qr_list' => Str::limit((string) $picked->guest_name, 200, ''),
+                'observations' => filled($listObs) ? trim((string) $listObs) : null,
+                'scanned_at' => now(),
+                'origin' => Scan::ORIGIN_MANUAL,
+            ];
+            $scan = Scan::create($manualPayload);
+        } else {
+            $value = trim((string) ($data['value'] ?? ''));
+            $observation = trim((string) ($data['observation'] ?? ''));
+
+            if ($value === '' && $observation === '') {
+                $randomSuffix = strtoupper(Str::random(8));
+                $value = 'MANUAL-' . $randomSuffix;
+                $observation = 'OBS-' . $randomSuffix;
+            }
+
+            $manualPayload = [
+                'user_id' => $request->user()->id,
+                'event_id' => $eventId,
+                'value' => $value,
+                'scanned_at' => now(),
+                'origin' => Scan::ORIGIN_MANUAL,
+            ];
+
+            if (! $isStorageType) {
+                $assignment = TableAssignment::query()
+                    ->where('event_id', $eventId)
+                    ->where('guest_name', $value)
+                    ->first();
+
+                if ($assignment) {
+                    $manualPayload['id_list'] = Str::limit((string) $assignment->table_number, 200, '');
+                    $manualPayload['qr_list'] = Str::limit((string) $assignment->guest_name, 200, '');
+                    $listObs = $assignment->observations;
+                    $manualPayload['observations'] = filled($listObs) ? trim((string) $listObs) : null;
+                } else {
+                    $manualPayload['observations'] = $observation !== '' ? $observation : null;
+                }
             } else {
                 $manualPayload['observations'] = $observation !== '' ? $observation : null;
             }
-        } else {
-            $manualPayload['observations'] = $observation !== '' ? $observation : null;
+
+            $scan = Scan::create($manualPayload);
         }
 
-        $scan = Scan::create($manualPayload);
-
-        $scans = Scan::where('event_id', session('currentEvent'))->count();
+        $scans = Scan::where('event_id', $eventId)->count();
         $total = $isStorageType
             ? $scans
-            : TableAssignment::where('event_id', session('currentEvent'))->count();
-        $userScans = Scan::where('event_id', session('currentEvent'))
+            : TableAssignment::where('event_id', $eventId)->count();
+        $userScans = Scan::where('event_id', $eventId)
             ->where('user_id', $request->user()->id)
             ->count();
 
+        $locationLabel = $scan->observations
+            ? (strlen($scan->observations) > 120 ? Str::limit($scan->observations, 120, '…') : $scan->observations)
+            : '—';
+
         return response()->json([
             'message' => 'Scan manual cargado correctamente.',
-            'name' => $value,
-            'location' => $observation !== '' ? $observation : '—',
+            'name' => $scan->value,
+            'location' => $locationLabel,
             'exists' => 0,
             'scans' => $scans,
             'total' => $total,

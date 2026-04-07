@@ -86,9 +86,25 @@
         <div class="p-6 sm:p-8">
             <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Cargar scan manual</h3>
             <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
-                Complete el QR/valor y una observación opcional.
+                Complete el QR/valor y una observaci?n opcional.
             </p>
             <form id="manual-scan-form" class="space-y-4">
+                @unless($isStorageType ?? false)
+                    <input type="hidden" name="table_assignment_id" id="manual-table-assignment-id" value="">
+                    <div class="rounded-lg border border-gray-200 dark:border-gray-600 p-3 bg-gray-50 dark:bg-gray-900/40">
+                        <label for="manual-list-search" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                            Buscar en listado
+                        </label>
+                        <input type="text"
+                               id="manual-list-search"
+                               autocomplete="off"
+                               placeholder="ID o QR del invitado..."
+                               class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                        <div id="manual-assignment-results"
+                             class="mt-2 max-h-48 overflow-y-auto rounded-md border border-gray-200 dark:border-gray-600 divide-y divide-gray-200 dark:divide-gray-600 hidden empty:hidden"></div>
+                        <p id="manual-assignment-search-hint" class="mt-1 text-xs text-gray-500 dark:text-gray-400">Escriba para buscar; elija un registro para completar QR y datos del listado.</p>
+                    </div>
+                @endunless
                 <div>
                     <label for="manual-value" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
                         QR / Valor
@@ -100,7 +116,7 @@
                 </div>
                 <div>
                     <label for="manual-observation" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
-                        Observación (opcional)
+                        Observaci?n (opcional)
                     </label>
                     <textarea id="manual-observation"
                               name="observation"
@@ -158,6 +174,85 @@
             const btnOpenManualScanModal = document.getElementById('btn-open-manual-scan-modal');
             const manualScanForm = document.getElementById('manual-scan-form');
             const manualScanError = document.getElementById('manual-scan-error');
+            const assignmentsSearchUrl = @json(route('scanners.assignments.search'));
+            const manualTableAssignmentId = document.getElementById('manual-table-assignment-id');
+            const manualListSearch = document.getElementById('manual-list-search');
+            const manualAssignmentResults = document.getElementById('manual-assignment-results');
+            const manualValueInput = document.getElementById('manual-value');
+            const manualObservationInput = document.getElementById('manual-observation');
+            let assignmentSearchTimer = null;
+
+            function clearManualAssignmentPicker() {
+                if (manualTableAssignmentId) {
+                    manualTableAssignmentId.value = '';
+                }
+                if (manualListSearch) {
+                    manualListSearch.value = '';
+                }
+                if (manualAssignmentResults) {
+                    manualAssignmentResults.innerHTML = '';
+                    manualAssignmentResults.classList.add('hidden');
+                }
+            }
+
+            function renderAssignmentResults(items) {
+                if (!manualAssignmentResults) {
+                    return;
+                }
+                manualAssignmentResults.innerHTML = '';
+                if (!items.length) {
+                    manualAssignmentResults.classList.add('hidden');
+                    return;
+                }
+                manualAssignmentResults.classList.remove('hidden');
+                items.forEach((row) => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'w-full text-left px-3 py-2 text-sm text-gray-800 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800';
+                    btn.addEventListener('click', () => {
+                        if (manualTableAssignmentId) {
+                            manualTableAssignmentId.value = String(row.id);
+                        }
+                        if (manualValueInput) {
+                            manualValueInput.value = row.guest_name || '';
+                        }
+                        if (manualObservationInput) {
+                            manualObservationInput.value = row.observations || '';
+                        }
+                        manualAssignmentResults.innerHTML = '';
+                        manualAssignmentResults.classList.add('hidden');
+                        if (manualListSearch) {
+                            manualListSearch.value = '';
+                        }
+                    });
+                    const line = document.createElement('div');
+                    line.className = 'text-xs text-gray-500 dark:text-gray-400';
+                    line.textContent = 'ID: ' + (row.table_number != null ? String(row.table_number) : '?');
+                    const qrLine = document.createElement('div');
+                    qrLine.className = 'font-medium';
+                    qrLine.textContent = row.guest_name || '';
+                    btn.appendChild(line);
+                    btn.appendChild(qrLine);
+                    manualAssignmentResults.appendChild(btn);
+                });
+            }
+
+            async function runAssignmentsSearch() {
+                if (isStorageType || !manualListSearch) {
+                    return;
+                }
+                const q = manualListSearch.value.trim();
+                try {
+                    const url = assignmentsSearchUrl + '?q=' + encodeURIComponent(q);
+                    const res = await fetch(url, {
+                        headers: { 'Accept': 'application/json' },
+                    });
+                    const json = await res.json().catch(() => ({}));
+                    renderAssignmentResults(Array.isArray(json.data) ? json.data : []);
+                } catch (e) {
+                    renderAssignmentResults([]);
+                }
+            }
             const btnConfirmDuplicateScan = document.getElementById('btn-confirm-duplicate-scan');
             const btnCancelDuplicateConfirmation = document.getElementById('btn-cancel-duplicate-confirmation');
             const userTotals = document.getElementById('userTotals');
@@ -323,10 +418,28 @@
 
             if (btnOpenManualScanModal) {
                 btnOpenManualScanModal.addEventListener('click', () => {
+                    if (!isStorageType) {
+                        clearManualAssignmentPicker();
+                    }
                     window.dispatchEvent(new CustomEvent('open-modal', { detail: 'manual-scan-modal' }));
                     if (manualScanError) {
                         manualScanError.classList.add('hidden');
                         manualScanError.textContent = '';
+                    }
+                });
+            }
+
+            if (!isStorageType && manualListSearch) {
+                manualListSearch.addEventListener('input', () => {
+                    clearTimeout(assignmentSearchTimer);
+                    assignmentSearchTimer = setTimeout(runAssignmentsSearch, 300);
+                });
+            }
+
+            if (!isStorageType && manualValueInput) {
+                manualValueInput.addEventListener('input', () => {
+                    if (manualTableAssignmentId && manualTableAssignmentId.value) {
+                        manualTableAssignmentId.value = '';
                     }
                 });
             }
@@ -344,6 +457,12 @@
                         value: formData.get('value'),
                         observation: formData.get('observation'),
                     };
+                    if (!isStorageType && manualTableAssignmentId && manualTableAssignmentId.value) {
+                        const tid = parseInt(manualTableAssignmentId.value, 10);
+                        if (!Number.isNaN(tid)) {
+                            payload.table_assignment_id = tid;
+                        }
+                    }
 
                     try {
                         const response = await fetch("{{ route('scanners.manual') }}", {

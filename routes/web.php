@@ -41,6 +41,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/', 'start')->name('start');
             Route::post('/', 'storage')->name('storage');
             Route::post('/manual', 'storeManual')->name('manual');
+            Route::get('/assignments/search', 'searchAssignments')->name('assignments.search');
         });
 
     Route::prefix('scans')
