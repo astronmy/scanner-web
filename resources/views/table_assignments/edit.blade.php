@@ -21,10 +21,10 @@
                         @csrf
                         @method('PUT')
 
-                        {{-- Ubicación --}}
+                        {{-- ID --}}
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
-                                Ubicación
+                                ID
                             </label>
                             <input type="text" name="table_number"
                                    value="{{ old('table_number', $assignment->table_number) }}"
@@ -36,10 +36,10 @@
                             @enderror
                         </div>
 
-                        {{-- Invitado --}}
+                        {{-- QR --}}
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
-                                Invitado
+                                QR
                             </label>
                             <input type="text" name="guest_name"
                                    value="{{ old('guest_name', $assignment->guest_name) }}"
