@@ -17,11 +17,12 @@ class ScanController extends Controller
         $authUser = $request->user();
         $query = Scan::query()
             ->with('user')
+            ->leftJoin('events as e', 'e.id', '=', 'scans.event_id')
             ->leftJoin('table_assignments as ta', function ($join) {
                 $join->on('ta.event_id', '=', 'scans.event_id')
                     ->on('ta.guest_name', '=', 'scans.value');
             })
-            ->select('scans.*', DB::raw('ta.observations as assignment_observations'));
+            ->select('scans.*', 'e.scan_type as event_scan_type', DB::raw('ta.observations as assignment_observations'));
 
         if (session()->has('currentEvent')) {
             $query->where('scans.event_id', session('currentEvent'));
@@ -57,12 +58,7 @@ class ScanController extends Controller
             ? User::orderBy('name')->get(['id', 'name', 'email'])
             : collect();
 
-        $currentEvent = session('currentEvent')
-            ? Event::query()->find(session('currentEvent'))
-            : null;
-        $isStorageType = (int) ($currentEvent?->scan_type ?? 1) === 2;
-
-        return view('scans.index', compact('scans', 'users', 'isStorageType'));
+        return view('scans.index', compact('scans', 'users'));
     }
 
     public function export(Request $request)

@@ -200,7 +200,7 @@
                                         </td>
                                         @unless(auth()->user()?->isUser())
                                             <td class="px-6 py-3 whitespace-nowrap text-right">
-                                                @if($scan->origin === \App\Models\Scan::ORIGIN_MANUAL || ($isStorageType ?? false))
+                                                @if($scan->origin === \App\Models\Scan::ORIGIN_MANUAL || (int) ($scan->event_scan_type ?? 1) === 2)
                                                     <a href="{{ route('scans.edit', $scan) }}"
                                                        class="inline-flex items-center px-3 py-1 mr-1 text-xs font-semibold rounded-md
                                                               bg-indigo-100 text-indigo-700 hover:bg-indigo-200">
