@@ -65,10 +65,10 @@
                             <button
                                 id="btn-new"
                                 class="inline-flex items-center px-10 py-3 text-lg font-bold
-                                       rounded-xl bg-violet-600 text-white
-                                       hover:bg-violet-700
+                                       rounded-xl bg-[#6a6b6b] text-white
+                                       hover:bg-[#5a5a5a]
                                        focus:outline-none focus:ring-2 focus:ring-offset-2
-                                       focus:ring-violet-500
+                                       focus:ring-[#6a6b6b]
                                        shadow-lg active:scale-95 transition">
                                 <svg class="mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
