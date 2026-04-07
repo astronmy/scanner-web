@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ScansExport;
+use App\Models\Event;
 use App\Models\Scan;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -56,7 +57,12 @@ class ScanController extends Controller
             ? User::orderBy('name')->get(['id', 'name', 'email'])
             : collect();
 
-        return view('scans.index', compact('scans', 'users'));
+        $currentEvent = session('currentEvent')
+            ? Event::query()->find(session('currentEvent'))
+            : null;
+        $isStorageType = (int) ($currentEvent?->scan_type ?? 1) === 2;
+
+        return view('scans.index', compact('scans', 'users', 'isStorageType'));
     }
 
     public function export(Request $request)
@@ -77,10 +83,10 @@ class ScanController extends Controller
             abort(403);
         }
 
-        if ($scan->origin !== Scan::ORIGIN_MANUAL) {
+        if (! $this->canEditScan($scan)) {
             return redirect()
                 ->route('scans.index')
-                ->with('error', 'Solo se pueden editar scans manuales.');
+                ->with('error', 'Solo se pueden editar scans manuales, excepto en eventos STORAGE.');
         }
 
         return view('scans.edit', compact('scan'));
@@ -92,10 +98,10 @@ class ScanController extends Controller
             abort(403);
         }
 
-        if ($scan->origin !== Scan::ORIGIN_MANUAL) {
+        if (! $this->canEditScan($scan)) {
             return redirect()
                 ->route('scans.index')
-                ->with('error', 'Solo se pueden editar scans manuales.');
+                ->with('error', 'Solo se pueden editar scans manuales, excepto en eventos STORAGE.');
         }
 
         $data = $request->validate([
@@ -114,7 +120,20 @@ class ScanController extends Controller
 
         return redirect()
             ->route('scans.index')
-            ->with('success', 'Scan manual actualizado correctamente.');
+            ->with('success', 'Scan actualizado correctamente.');
+    }
+
+    private function canEditScan(Scan $scan): bool
+    {
+        if ($scan->origin === Scan::ORIGIN_MANUAL) {
+            return true;
+        }
+
+        $scanType = Event::query()
+            ->whereKey($scan->event_id)
+            ->value('scan_type');
+
+        return (int) ($scanType ?? 1) === 2;
     }
 
     public function destroy(Scan $scan)

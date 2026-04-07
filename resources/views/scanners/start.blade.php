@@ -86,7 +86,7 @@
         <div class="p-6 sm:p-8">
             <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Cargar scan manual</h3>
             <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
-                Complete el QR/valor y una observación opcional.
+                Complete el QR/valor y una observaci?n opcional.
             </p>
             <form id="manual-scan-form" class="space-y-4">
                 <div>
@@ -411,6 +411,11 @@
                     result.textContent = 'Escaneo duplicado no almacenado.';
                     result.classList.remove('text-emerald-600', 'dark:text-emerald-400');
                     result.classList.add('text-red-600', 'dark:text-red-400');
+                    if (autoStartEnabled) {
+                        setTimeout(() => {
+                            triggerNewScan();
+                        }, 700);
+                    }
                 });
             }
 
