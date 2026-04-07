@@ -7,6 +7,8 @@ use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Models\Event;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
 class EventController extends Controller
@@ -64,7 +66,15 @@ class EventController extends Controller
 
     public function store(StoreEventRequest $request)
     {
-        Event::create($request->validated());
+        $data = $request->validated();
+        if (isset($data['cover_image']) && $data['cover_image'] instanceof UploadedFile) {
+            unset($data['cover_image']);
+        }
+        if ($request->hasFile('cover_image')) {
+            $data['cover_image'] = $request->file('cover_image')->store('events', 'public');
+        }
+
+        Event::create($data);
 
         return redirect()
             ->route('events.index')
@@ -78,7 +88,18 @@ class EventController extends Controller
 
     public function update(UpdateEventRequest $request, Event $event)
     {
-        $event->update($request->validated());
+        $data = $request->validated();
+        if (isset($data['cover_image']) && $data['cover_image'] instanceof UploadedFile) {
+            unset($data['cover_image']);
+        }
+        if ($request->hasFile('cover_image')) {
+            if ($event->cover_image) {
+                Storage::disk('public')->delete($event->cover_image);
+            }
+            $data['cover_image'] = $request->file('cover_image')->store('events', 'public');
+        }
+
+        $event->update($data);
 
         return redirect()
             ->route('events.index')
@@ -87,6 +108,10 @@ class EventController extends Controller
 
     public function destroy(Event $event)
     {
+        if ($event->cover_image) {
+            Storage::disk('public')->delete($event->cover_image);
+        }
+
         $event->delete();
 
         return redirect()

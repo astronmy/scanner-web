@@ -14,7 +14,7 @@
                         Editar evento
                     </h1>
 
-                    <form action="{{ route('events.update', $event) }}" method="POST" class="space-y-4">
+                    <form action="{{ route('events.update', $event) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                         @csrf
                         @method('PUT')
 
@@ -33,6 +33,30 @@
                                        text-gray-900 dark:text-gray-100
                                        shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
                             @error('name')
+                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="cover_image" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                                Imagen (dashboard)
+                            </label>
+                            @if($event->cover_image)
+                                <div class="mb-2 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600 max-w-xs">
+                                    <img src="{{ $event->coverImageUrl() }}" alt="" class="w-full h-28 object-cover">
+                                </div>
+                            @endif
+                            <input
+                                type="file"
+                                name="cover_image"
+                                id="cover_image"
+                                accept="image/*"
+                                class="mt-1 block w-full text-sm text-gray-700 dark:text-gray-200
+                                       file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0
+                                       file:text-sm file:font-medium file:bg-gray-100 file:text-gray-800
+                                       dark:file:bg-gray-700 dark:file:text-gray-100">
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Opcional. Dejar vac&iacute;o para conservar la imagen actual. M&aacute;x. 4&nbsp;MB.</p>
+                            @error('cover_image')
                                 <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                             @enderror
                         </div>

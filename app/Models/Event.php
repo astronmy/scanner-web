@@ -11,6 +11,7 @@ class Event extends Model
 
     protected $fillable = [
         'name',
+        'cover_image',
         'start_date',
         'label',
         'end_date',
@@ -34,5 +35,12 @@ class Event extends Model
     public function users()
     {
         return $this->belongsToMany(User::class)->withTimestamps();
+    }
+
+    public function coverImageUrl(): ?string
+    {
+        return $this->cover_image
+            ? asset('storage/' . $this->cover_image)
+            : null;
     }
 }

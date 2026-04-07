@@ -10,9 +10,13 @@
                 @foreach($events as $event)
                     <div class="w-full h-full min-h-[200px] flex flex-col rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl overflow-hidden transition-all duration-200">
                         <div class="aspect-[16/10] w-full shrink-0 bg-gray-100 dark:bg-gray-700 overflow-hidden">
-                            <div class="w-full h-full flex items-center justify-center bg-emerald-600/20 dark:bg-emerald-500/20">
-                                <span class="text-4xl font-bold text-emerald-600 dark:text-emerald-400 opacity-60">E</span>
-                            </div>
+                            @if($event->cover_image)
+                                <img src="{{ $event->coverImageUrl() }}" alt="" class="w-full h-full object-cover">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center bg-emerald-600/20 dark:bg-emerald-500/20">
+                                    <span class="text-4xl font-bold text-emerald-600 dark:text-emerald-400 opacity-60">E</span>
+                                </div>
+                            @endif
                         </div>
 
                         <div class="flex-1 flex flex-col items-center justify-center p-4">
