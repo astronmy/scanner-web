@@ -159,10 +159,16 @@
                                 <thead class="bg-gray-50 dark:bg-gray-800">
                                     <tr>
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider w-20">
-                                            ID
+                                            Registro
                                         </th>
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider w-1/3">
                                             Valor
+                                        </th>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider w-24">
+                                            ID
+                                        </th>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider w-1/4">
+                                            QR
                                         </th>
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-300 uppercase tracking-wider w-1/3">
                                             Observaciones
@@ -190,7 +196,13 @@
                                             {{ $scan->value }}
                                         </td>
                                         <td class="px-6 py-3 text-gray-700 dark:text-gray-200 whitespace-normal break-words">
-                                            {{ $scan->observations ?? $scan->assignment_observations ?? '—' }}
+                                            {{ $scan->id_list ?? '—' }}
+                                        </td>
+                                        <td class="px-6 py-3 text-gray-700 dark:text-gray-200 whitespace-normal break-words">
+                                            {{ $scan->qr_list ?? '—' }}
+                                        </td>
+                                        <td class="px-6 py-3 text-gray-700 dark:text-gray-200 whitespace-normal break-words">
+                                            {{ $scan->observations ?? '—' }}
                                         </td>
                                         <td class="px-6 py-3 text-gray-700 dark:text-gray-200 whitespace-normal break-words">
                                             {{ $scan->user?->name ?? $scan->user?->email ?? '—' }}
@@ -233,7 +245,7 @@
                                     </tr>
                                     @empty
                                     <tr>
-                                        <td colspan="{{ auth()->user()?->isUser() ? 5 : 6 }}" class="px-6 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
+                                        <td colspan="{{ auth()->user()?->isUser() ? 7 : 8 }}" class="px-6 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
                                             No se encontraron registros de scans.
                                         </td>
                                     </tr>

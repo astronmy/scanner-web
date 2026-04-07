@@ -32,6 +32,34 @@
                         </div>
 
                         <div>
+                            <span class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                                ID
+                            </span>
+                            <input
+                                type="text"
+                                readonly
+                                disabled
+                                value="{{ $scan->id_list ?? '—' }}"
+                                class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600
+                                       bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400
+                                       shadow-sm text-sm cursor-not-allowed">
+                        </div>
+
+                        <div>
+                            <span class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                                QR
+                            </span>
+                            <input
+                                type="text"
+                                readonly
+                                disabled
+                                value="{{ $scan->qr_list ?? '—' }}"
+                                class="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600
+                                       bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400
+                                       shadow-sm text-sm cursor-not-allowed">
+                        </div>
+
+                        <div>
                             <label for="observations" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
                                 Observaciones
                             </label>
