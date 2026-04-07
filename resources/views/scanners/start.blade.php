@@ -27,7 +27,7 @@
                     <div class="flex justify-end mb-4">
                         <button
                             type="button"
-                            class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#406075] text-white hover:bg-[#355566] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#406075] shadow-lg"
+                            class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#6a6b6b] text-white hover:bg-[#5a5a5a] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6a6b6b] shadow-lg"
                             title="Cargar scan manual"
                             id="btn-open-manual-scan-modal">
                             <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -115,7 +115,7 @@
                         Cancelar
                     </button>
                     <button type="submit"
-                        class="inline-flex items-center px-5 py-2.5 text-base font-medium text-white bg-[#406075] hover:bg-[#355566] rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#406075]">
+                        class="inline-flex items-center px-5 py-2.5 text-base font-medium text-white bg-[#2e4f70] hover:bg-[#243d58] rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2e4f70]">
                         Guardar manual
                     </button>
                 </div>
@@ -136,7 +136,7 @@
                 </button>
                 <button type="button"
                     id="btn-confirm-duplicate-scan"
-                    class="inline-flex items-center px-5 py-2.5 text-base font-medium text-white bg-[#406075] hover:bg-[#355566] rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#406075]">
+                    class="inline-flex items-center px-5 py-2.5 text-base font-medium text-white bg-[#2e4f70] hover:bg-[#243d58] rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2e4f70]">
                     S&iacute;, agregar
                 </button>
             </div>
@@ -421,7 +421,7 @@
     <div class="fixed bottom-6 right-6">
         <div id="userTotals"
             class="w-16 h-16 rounded-full
-               bg-[#FBB52F] text-gray-900
+               bg-[#f8af20] text-gray-900
                flex items-center justify-center
                text-lg font-bold shadow-xl
                border-2 border-white dark:border-gray-800
@@ -435,7 +435,7 @@
             class="min-w-[90px] h-14
                px-4
                rounded-xl
-               bg-[#406075] text-white
+               bg-[#2e4f70] text-white
                flex items-center justify-center
                text-base font-bold
                shadow-xl
