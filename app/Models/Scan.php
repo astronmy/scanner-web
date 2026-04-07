@@ -17,6 +17,8 @@ class Scan extends Model
     protected $fillable = [
         'user_id',
         'value',
+        'id_list',
+        'qr_list',
         'observations',
         'scanned_at',
         'event_id',

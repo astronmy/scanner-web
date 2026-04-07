@@ -101,13 +101,22 @@ class ScannerController extends Controller
         }
 
         if (! $alreadyScan || ($alreadyScan && $checkDuplicity && $confirmDuplicate)) {
-            Scan::create([
+            $scanPayload = [
                 'user_id'    => $request->user()->id,
                 'event_id'   => session('currentEvent'),
                 'value'      => $scannedValue,
                 'scanned_at' => now(),
                 'origin'     => Scan::ORIGIN_AUTOMATIC,
-            ]);
+            ];
+
+            if (! $isStorageType && $search) {
+                $scanPayload['id_list'] = Str::limit((string) $search->table_number, 200, '');
+                $scanPayload['qr_list'] = Str::limit((string) $search->guest_name, 200, '');
+                $listObs = $search->observations;
+                $scanPayload['observations'] = filled($listObs) ? trim((string) $listObs) : null;
+            }
+
+            Scan::create($scanPayload);
         }
 
         $scans = Scan::where('event_id', session('currentEvent'))->count();
@@ -157,18 +166,38 @@ class ScannerController extends Controller
             $observation = 'OBS-' . $randomSuffix;
         }
 
-        $scan = Scan::create([
+        $event = Event::findOrFail(session('currentEvent'));
+        $isStorageType = (int) ($event->scan_type ?? 1) === 2;
+
+        $manualPayload = [
             'user_id' => $request->user()->id,
             'event_id' => session('currentEvent'),
             'value' => $value,
-            'observations' => $observation !== '' ? $observation : null,
             'scanned_at' => now(),
             'origin' => Scan::ORIGIN_MANUAL,
-        ]);
+        ];
+
+        if (! $isStorageType) {
+            $assignment = TableAssignment::query()
+                ->where('event_id', session('currentEvent'))
+                ->where('guest_name', $value)
+                ->first();
+
+            if ($assignment) {
+                $manualPayload['id_list'] = Str::limit((string) $assignment->table_number, 200, '');
+                $manualPayload['qr_list'] = Str::limit((string) $assignment->guest_name, 200, '');
+                $listObs = $assignment->observations;
+                $manualPayload['observations'] = filled($listObs) ? trim((string) $listObs) : null;
+            } else {
+                $manualPayload['observations'] = $observation !== '' ? $observation : null;
+            }
+        } else {
+            $manualPayload['observations'] = $observation !== '' ? $observation : null;
+        }
+
+        $scan = Scan::create($manualPayload);
 
         $scans = Scan::where('event_id', session('currentEvent'))->count();
-        $event = Event::findOrFail(session('currentEvent'));
-        $isStorageType = (int) ($event->scan_type ?? 1) === 2;
         $total = $isStorageType
             ? $scans
             : TableAssignment::where('event_id', session('currentEvent'))->count();
