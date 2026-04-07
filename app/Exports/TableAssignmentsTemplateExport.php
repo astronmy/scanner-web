@@ -20,8 +20,8 @@ class TableAssignmentsTemplateExport implements FromArray, WithHeadings, WithTit
     public function array(): array
     {
         return [
-            [1, 'Juan Perez', 'Sin TACC'],
-            [2, 'Maria Gomez', 'Vegetariano'],
+            ['ROMAN RIQUELME', 1, 'Sin TACC'],
+            ['JUAN RODRIGUEZ', 2, 'Vegetariano'],
         ];
     }
 

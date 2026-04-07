@@ -77,11 +77,15 @@ class TableAssignmentController extends Controller
         $request->validate([
             'table_number' => ['required', 'string', 'max:50'],
             'guest_name'   => ['required', 'string', 'max:255'],
+            'observations' => ['nullable', 'string', 'max:1000'],
         ]);
 
         $assignment->update([
             'table_number' => $request->table_number,
             'guest_name'   => $request->guest_name,
+            'observations' => $request->filled('observations')
+                ? trim((string) $request->observations)
+                : null,
             'event_id' => session('currentEvent') ?? null
         ]);
 

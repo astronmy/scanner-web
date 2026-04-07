@@ -51,6 +51,20 @@
                             @enderror
                         </div>
 
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                                Observaciones
+                            </label>
+                            <textarea name="observations"
+                                      rows="4"
+                                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm
+                                             focus:border-indigo-500 focus:ring-indigo-500 text-sm">{{ old('observations', $assignment->observations) }}</textarea>
+
+                            @error('observations')
+                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         <div class="flex justify-end gap-2 pt-4">
                             <a href="{{ route('assignments.index') }}"
                                class="inline-flex items-center px-4 py-2 border border-gray-300
