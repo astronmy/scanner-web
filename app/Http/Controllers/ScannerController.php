@@ -30,6 +30,13 @@ class ScannerController extends Controller
         $userScans = $userScansQuery->where('user_id', $request->user()->id)->count();
 
         $event = Event::findOrFail(session('currentEvent'));
+
+        if ((int) ($event->scan_type ?? 1) === 3) {
+            return redirect()
+                ->route('dashboard')
+                ->with('info', 'Este evento usa el modo LIST: abrí el listado desde el ícono de documento en el dashboard.');
+        }
+
         $isStorageType = (int) ($event->scan_type ?? 1) === 2;
         $query = TableAssignment::query();
 
@@ -47,6 +54,13 @@ class ScannerController extends Controller
     }
     public function storage(Request $request) {
         $event = Event::findOrFail(session('currentEvent'));
+
+        if ((int) ($event->scan_type ?? 1) === 3) {
+            return response()->json([
+                'message' => 'Este evento usa el listado; no está disponible el escáner QR.',
+            ], 422);
+        }
+
         $isStorageType = (int) ($event->scan_type ?? 1) === 2;
         $checkDuplicity = (bool) ($event->check_duplicity ?? false);
         $scannedValue = (string) $request->value;
@@ -292,5 +306,242 @@ class ScannerController extends Controller
             'scan_id' => $scan->id,
             'origin' => $scan->origin,
         ]);
+    }
+
+
+    public function list(Request $request, Event $event)
+    {
+        $user = $request->user();
+        if (! $user->hasEvent($event->id) && ! $user->isAdmin()) {
+            abort(404);
+        }
+        if ((int) ($event->scan_type ?? 1) !== 3) {
+            abort(404);
+        }
+
+        $request->session()->put('currentEvent', $event->id);
+        $request->session()->put('currentEventName', $event->name);
+
+        $assignments = TableAssignment::query()
+            ->where('event_id', $event->id)
+            ->orderBy('table_number')
+            ->orderBy('guest_name')
+            ->get();
+
+        $listRows = $this->buildListGridRows((int) $event->id, $assignments);
+
+        $scans = Scan::query()->where('event_id', $event->id)->count();
+        $total = $assignments->count();
+        $userScans = Scan::query()
+            ->where('event_id', $event->id)
+            ->where('user_id', $user->id)
+            ->count();
+
+        return view('scanners.list', compact('event', 'listRows', 'scans', 'total', 'userScans'));
+    }
+
+    /**
+     * Filas del listado: una por asignación pendiente, una por cada escaneo vinculado al QR del listado
+     * (incluye duplicados), y una por cada escaneo cuyo valor no coincide con ningún guest_name del listado.
+     *
+     * @param  \Illuminate\Support\Collection<int, TableAssignment>  $assignments
+     * @return \Illuminate\Support\Collection<int, object{
+     *     kind: string,
+     *     assignment: ?TableAssignment,
+     *     scan: ?Scan,
+     *     is_duplicate: bool
+     * }>
+     */
+    private function buildListGridRows(int $eventId, $assignments): \Illuminate\Support\Collection
+    {
+        $scansGrouped = Scan::query()
+            ->where('event_id', $eventId)
+            ->orderByDesc('scanned_at')
+            ->orderByDesc('id')
+            ->get()
+            ->groupBy(fn (Scan $s) => (string) $s->value);
+
+        $assignmentKeys = $assignments->keyBy(fn (TableAssignment $a) => (string) $a->guest_name);
+
+        $listRows = collect();
+
+        foreach ($assignments as $a) {
+            $key = (string) $a->guest_name;
+            $scans = $scansGrouped->get($key, collect());
+            if ($scans->isEmpty()) {
+                $listRows->push((object) [
+                    'kind' => 'pending',
+                    'assignment' => $a,
+                    'scan' => null,
+                    'is_duplicate' => false,
+                ]);
+            } else {
+                $i = 0;
+                foreach ($scans as $scan) {
+                    $listRows->push((object) [
+                        'kind' => 'registered',
+                        'assignment' => $a,
+                        'scan' => $scan,
+                        'is_duplicate' => $i > 0,
+                    ]);
+                    $i++;
+                }
+            }
+        }
+
+        $orphanKeys = $scansGrouped->keys()
+            ->filter(fn ($v) => ! $assignmentKeys->has((string) $v))
+            ->sortByDesc(function ($v) use ($scansGrouped) {
+                $max = $scansGrouped->get($v)->max('scanned_at');
+
+                return $max instanceof \Carbon\Carbon ? $max->timestamp : 0;
+            })
+            ->values();
+
+        foreach ($orphanKeys as $value) {
+            $i = 0;
+            foreach ($scansGrouped->get($value) as $scan) {
+                $listRows->push((object) [
+                    'kind' => 'orphan',
+                    'assignment' => null,
+                    'scan' => $scan,
+                    'is_duplicate' => $i > 0,
+                ]);
+                $i++;
+            }
+        }
+
+        return $listRows;
+    }
+
+    public function storeListScan(Request $request, Event $event, TableAssignment $tableAssignment)
+    {
+        $user = $request->user();
+        if (! $user->hasEvent($event->id) && ! $user->isAdmin()) {
+            abort(404);
+        }
+        if ((int) ($event->scan_type ?? 1) !== 3) {
+            abort(404);
+        }
+        if ((int) $tableAssignment->event_id !== (int) $event->id) {
+            abort(404);
+        }
+
+        $value = trim((string) $tableAssignment->guest_name);
+
+        $alreadyScanned = Scan::query()
+            ->where('event_id', $event->id)
+            ->where('value', $value)
+            ->exists();
+
+        if ($alreadyScanned) {
+            return response()->json([
+                'message' => 'Esta persona ya fue registrada.',
+            ], 422);
+        }
+
+        $listObs = $tableAssignment->observations;
+        $scan = Scan::create([
+            'user_id' => $user->id,
+            'event_id' => $event->id,
+            'value' => $value,
+            'id_list' => Str::limit((string) $tableAssignment->table_number, 200, ''),
+            'qr_list' => Str::limit((string) $tableAssignment->guest_name, 200, ''),
+            'observations' => filled($listObs) ? trim((string) $listObs) : null,
+            'scanned_at' => now(),
+            'origin' => Scan::ORIGIN_MANUAL,
+        ]);
+
+        $scansCount = Scan::query()
+            ->where('event_id', $event->id)
+            ->where('value', $value)
+            ->count();
+
+        $scans = Scan::query()->where('event_id', $event->id)->count();
+        $total = TableAssignment::query()->where('event_id', $event->id)->count();
+        $userScans = Scan::query()
+            ->where('event_id', $event->id)
+            ->where('user_id', $user->id)
+            ->count();
+
+        return response()->json([
+            'message' => 'Registro cargado.',
+            'scans_count' => $scansCount,
+            'last_scanned_at' => $scan->scanned_at?->format('Y-m-d H:i:s'),
+            'scan_id' => $scan->id,
+            'scans' => $scans,
+            'total' => $total,
+            'user_scans' => $userScans,
+        ]);
+    }
+
+    public function listScanEditData(Request $request, Event $event, Scan $scan)
+    {
+        $this->authorizeListScanRow($request, $event, $scan);
+
+        return response()->json([
+            'scan' => [
+                'id' => $scan->id,
+                'value' => $scan->value,
+                'id_list' => $scan->id_list,
+                'qr_list' => $scan->qr_list,
+                'observations' => $scan->observations,
+                'scanned_at' => $scan->scanned_at?->format('Y-m-d\TH:i'),
+            ],
+        ]);
+    }
+
+    public function updateListScan(Request $request, Event $event, Scan $scan)
+    {
+        $this->authorizeListScanRow($request, $event, $scan);
+
+        $data = $request->validate([
+            'value' => ['required', 'string', 'max:255'],
+            'id_list' => ['nullable', 'string', 'max:200'],
+            'qr_list' => ['nullable', 'string', 'max:200'],
+            'observations' => ['nullable', 'string', 'max:500'],
+            'scanned_at' => ['nullable', 'date'],
+        ]);
+
+        $observations = trim((string) ($data['observations'] ?? ''));
+
+        $scan->update([
+            'value' => trim($data['value']),
+            'id_list' => array_key_exists('id_list', $data) ? Str::limit(trim((string) ($data['id_list'] ?? '')), 200, '') : $scan->id_list,
+            'qr_list' => array_key_exists('qr_list', $data) ? Str::limit(trim((string) ($data['qr_list'] ?? '')), 200, '') : $scan->qr_list,
+            'observations' => $observations !== '' ? $observations : null,
+            'scanned_at' => $data['scanned_at'] ?? $scan->scanned_at,
+        ]);
+
+        $scan->refresh();
+
+        return response()->json([
+            'message' => 'Scan actualizado.',
+            'scan' => [
+                'id' => $scan->id,
+                'value' => $scan->value,
+                'id_list' => $scan->id_list,
+                'qr_list' => $scan->qr_list,
+                'observations' => $scan->observations,
+                'scanned_at' => $scan->scanned_at?->format('Y-m-d H:i:s'),
+            ],
+        ]);
+    }
+
+    private function authorizeListScanRow(Request $request, Event $event, Scan $scan): void
+    {
+        $user = $request->user();
+        if (! $user->hasEvent($event->id) && ! $user->isAdmin()) {
+            abort(404);
+        }
+        if ((int) ($event->scan_type ?? 1) !== 3) {
+            abort(404);
+        }
+        if ((int) $scan->event_id !== (int) $event->id) {
+            abort(404);
+        }
+        if (! $user->isAdmin() && (int) $scan->user_id !== (int) $user->id) {
+            abort(403);
+        }
     }
 }

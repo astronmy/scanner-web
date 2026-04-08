@@ -21,7 +21,7 @@ class UpdateEventRequest extends FormRequest
             'end_date'   => ['required', 'date', 'after_or_equal:start_date'],
             'new_button_enabled' => ['required', 'boolean'],
             'message_not_found' => ['nullable', 'string', 'max:255'],
-            'scan_type' => ['required', 'integer', 'in:1,2'],
+            'scan_type' => ['required', 'integer', 'in:1,2,3'],
             'autostart' => ['required', 'boolean'],
             'separator' => ['nullable', 'string', 'max:20'],
             'check_duplicity' => ['required', 'boolean'],

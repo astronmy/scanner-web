@@ -63,6 +63,12 @@ class DashboardController extends Controller
         $request->session()->put('currentEvent', $event->id);
         $request->session()->put('currentEventName', $event->name);
 
+        if ((int) ($event->scan_type ?? 1) === 3) {
+            return redirect()
+                ->route('dashboard')
+                ->with('info', 'Este evento usa el modo LIST: abrí el listado desde el ícono de documento en el dashboard.');
+        }
+
         return redirect()->route('scanners.start');
     }
 

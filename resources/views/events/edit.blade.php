@@ -150,6 +150,7 @@
                                            shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
                                     <option value="1" @selected((string) old('scan_type', (string) ($event->scan_type ?? 1)) === '1')>CHECK IN</option>
                                     <option value="2" @selected((string) old('scan_type', (string) ($event->scan_type ?? 1)) === '2')>STORAGE</option>
+                                    <option value="3" @selected((string) old('scan_type', (string) ($event->scan_type ?? 1)) === '3')>LIST</option>
                                 </select>
                                 @error('scan_type')
                                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
