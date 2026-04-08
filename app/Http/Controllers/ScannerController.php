@@ -528,6 +528,52 @@ class ScannerController extends Controller
         ]);
     }
 
+    public function destroyListScan(Request $request, Event $event, Scan $scan)
+    {
+        $this->authorizeListScanRow($request, $event, $scan);
+
+        $value = trim((string) $scan->value);
+        $scan->delete();
+
+        $hasAssignment = TableAssignment::query()
+            ->where('event_id', $event->id)
+            ->where('guest_name', $value)
+            ->exists();
+        $remainingForValue = Scan::query()
+            ->where('event_id', $event->id)
+            ->where('value', $value)
+            ->count();
+
+        $revertToPending = $hasAssignment && $remainingForValue === 0;
+        $registerUrl = null;
+        if ($revertToPending) {
+            $assignment = TableAssignment::query()
+                ->where('event_id', $event->id)
+                ->where('guest_name', $value)
+                ->first();
+            if ($assignment) {
+                $registerUrl = route('scanners.list.scan', [$event, $assignment]);
+            }
+        }
+
+        $user = $request->user();
+        $scans = Scan::query()->where('event_id', $event->id)->count();
+        $total = TableAssignment::query()->where('event_id', $event->id)->count();
+        $userScans = Scan::query()
+            ->where('event_id', $event->id)
+            ->where('user_id', $user->id)
+            ->count();
+
+        return response()->json([
+            'message' => 'Escaneo eliminado.',
+            'revert_to_pending' => $revertToPending,
+            'register_url' => $registerUrl,
+            'scans' => $scans,
+            'total' => $total,
+            'user_scans' => $userScans,
+        ]);
+    }
+
     private function authorizeListScanRow(Request $request, Event $event, Scan $scan): void
     {
         $user = $request->user();

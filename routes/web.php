@@ -43,6 +43,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/list/{event}', 'list')->name('list');
             Route::get('/list/{event}/scans/{scan}/edit-data', 'listScanEditData')->name('list.scan.edit-data');
             Route::put('/list/{event}/scans/{scan}', 'updateListScan')->name('list.scan.update');
+            Route::delete('/list/{event}/scans/{scan}', 'destroyListScan')->name('list.scan.destroy');
             Route::post('/list/{event}/assignments/{tableAssignment}/scan', 'storeListScan')->name('list.scan');
             Route::post('/', 'storage')->name('storage');
             Route::post('/manual', 'storeManual')->name('manual');

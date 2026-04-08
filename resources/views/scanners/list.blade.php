@@ -64,12 +64,12 @@
                     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
                         <thead class="bg-gray-50 dark:bg-gray-900/50">
                             <tr>
+                                <th class="px-3 py-2 text-left font-semibold text-gray-700 dark:text-gray-200 w-28">Acciones</th>
                                 <th class="px-3 py-2 text-left font-semibold text-gray-700 dark:text-gray-200">ID</th>
                                 <th class="px-3 py-2 text-left font-semibold text-gray-700 dark:text-gray-200">QR</th>
                                 <th class="px-3 py-2 text-left font-semibold text-gray-700 dark:text-gray-200">Observaciones</th>
                                 <th class="list-col-wide-only px-3 py-2 text-left font-semibold text-gray-700 dark:text-gray-200">Estado</th>
                                 <th class="list-col-wide-only px-3 py-2 text-left font-semibold text-gray-700 dark:text-gray-200">Registrado</th>
-                                <th class="px-3 py-2 text-right font-semibold text-gray-700 dark:text-gray-200">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -108,7 +108,38 @@
                                         ? 'bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800/90 border-l-4 border-gray-200 dark:border-gray-600'
                                         : 'bg-emerald-200/90 dark:bg-emerald-900/50 hover:bg-emerald-300/95 dark:hover:bg-emerald-800/55 border-l-4 border-emerald-600 dark:border-emerald-400' }} transition-colors duration-150"
                                     data-search="{{ e($gSearch) }}">
-                                    <td class="px-3 py-2 whitespace-nowrap">{{ $gTable }}</td>
+                                    <td class="px-3 py-2 text-left whitespace-nowrap actions-cell">
+                                        @if($gPending)
+                                            <button type="button"
+                                                class="js-list-scan inline-flex items-center justify-center w-9 h-9 rounded-lg border border-emerald-500/70 bg-emerald-50 dark:bg-emerald-900/25 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 focus:outline-none focus:ring-2 focus:ring-emerald-400 disabled:opacity-50"
+                                                title="Registrar escaneo"
+                                                data-url="{{ route('scanners.list.scan', [$event, $gAssignment]) }}">
+                                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                                </svg>
+                                            </button>
+                                        @elseif($gScan)
+                                            <div class="inline-flex items-center justify-start gap-1">
+                                                <button type="button"
+                                                    class="js-list-delete-scan inline-flex items-center justify-center w-9 h-9 rounded-lg border border-red-600/80 bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50"
+                                                    title="Eliminar escaneo"
+                                                    data-scan-id="{{ $gScan->id }}">
+                                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                                    </svg>
+                                                </button>
+                                                <button type="button"
+                                                    class="js-list-edit-scan inline-flex items-center justify-center w-9 h-9 rounded-lg border border-sky-500/50 bg-sky-50 dark:bg-sky-900/25 text-sky-600 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/40 focus:outline-none focus:ring-2 focus:ring-sky-400"
+                                                    title="Editar escaneo"
+                                                    data-scan-id="{{ $gScan->id }}">
+                                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        @endif
+                                    </td>
+                                    <td class="px-3 py-2 whitespace-nowrap id-display-cell">{{ $gTable }}</td>
                                     <td class="px-3 py-2 break-all max-w-xs qr-display-cell">{{ $gQr }}</td>
                                     <td class="px-3 py-2 text-gray-600 dark:text-gray-300 max-w-xs break-words obs-display-cell">{{ $gObs !== '' ? $gObs : '—' }}</td>
                                     <td class="list-col-wide-only px-3 py-2 whitespace-nowrap estado-cell">
@@ -128,36 +159,6 @@
                                     </td>
                                     <td class="list-col-wide-only px-3 py-2 whitespace-nowrap text-xs last-scan-cell">
                                         {{ $gScannedAt ? $gScannedAt->format('d/m/Y H:i') : '—' }}
-                                    </td>
-                                    <td class="px-3 py-2 text-right whitespace-nowrap actions-cell">
-                                        @if($gPending)
-                                            <button type="button"
-                                                class="js-list-scan inline-flex items-center justify-center w-9 h-9 rounded-lg border border-amber-400/60 bg-amber-50 dark:bg-amber-900/20 text-amber-500 hover:bg-amber-100 dark:hover:bg-amber-900/40 focus:outline-none focus:ring-2 focus:ring-amber-400 disabled:opacity-50"
-                                                title="Registrar escaneo"
-                                                data-url="{{ route('scanners.list.scan', [$event, $gAssignment]) }}">
-                                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                </svg>
-                                            </button>
-                                        @elseif($gScan)
-                                            <div class="inline-flex items-center justify-end gap-1">
-                                                <span class="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-emerald-500/50 bg-emerald-50 dark:bg-emerald-900/25 text-emerald-600 dark:text-emerald-400"
-                                                    title="Ya registrado" role="img" aria-label="Ya registrado">
-                                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                                                    </svg>
-                                                </span>
-                                                <button type="button"
-                                                    class="js-list-edit-scan inline-flex items-center justify-center w-9 h-9 rounded-lg border border-sky-500/50 bg-sky-50 dark:bg-sky-900/25 text-sky-600 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/40 focus:outline-none focus:ring-2 focus:ring-sky-400"
-                                                    title="Editar escaneo"
-                                                    data-scan-id="{{ $gScan->id }}">
-                                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                        @endif
                                     </td>
                                 </tr>
                             @empty
@@ -275,7 +276,7 @@
 
                 function refreshListRowSearchBlob(tr) {
                     if (!tr || !tr.classList.contains('list-grid-data-row')) return;
-                    const idCell = tr.querySelector('td:first-of-type');
+                    const idCell = tr.querySelector('.id-display-cell');
                     const qr = tr.querySelector('.qr-display-cell');
                     const obs = tr.querySelector('.obs-display-cell');
                     const estado = tr.querySelector('.estado-cell');
@@ -291,12 +292,20 @@
                     ].join(' ').toLowerCase().replace(/\s+/g, ' ').trim();
                     tr.setAttribute('data-search', blob);
                 }
-                const checkSvg = '<span class="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-emerald-500/50 bg-emerald-50 dark:bg-emerald-900/25 text-emerald-600 dark:text-emerald-400" title="Ya registrado" role="img" aria-label="Ya registrado"><svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg></span>';
+                function escapeHtmlAttr(s) {
+                    return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+                }
                 const pencilBtn = (scanId) => '<button type="button" class="js-list-edit-scan inline-flex items-center justify-center w-9 h-9 rounded-lg border border-sky-500/50 bg-sky-50 dark:bg-sky-900/25 text-sky-600 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/40 focus:outline-none focus:ring-2 focus:ring-sky-400" title="Editar escaneo" data-scan-id="' + scanId + '"><svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg></button>';
+                const deleteScanBtn = (scanId) => '<button type="button" class="js-list-delete-scan inline-flex items-center justify-center w-9 h-9 rounded-lg border border-red-600/80 bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50" title="Eliminar escaneo" data-scan-id="' + scanId + '"><svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>';
                 const estadoRegistradoHtml = '<span class="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200">Registrado</span>';
+                const estadoPendienteHtml = '<span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-200">Pendiente</span>';
+
+                function pendingRegisterCheckBtn(registerUrl) {
+                    return '<button type="button" class="js-list-scan inline-flex items-center justify-center w-9 h-9 rounded-lg border border-emerald-500/70 bg-emerald-50 dark:bg-emerald-900/25 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 focus:outline-none focus:ring-2 focus:ring-emerald-400 disabled:opacity-50" title="Registrar escaneo" data-url="' + escapeHtmlAttr(registerUrl) + '"><svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg></button>';
+                }
 
                 function registeredActionsHtml(scanId) {
-                    return '<div class="inline-flex items-center justify-end gap-1">' + checkSvg + pencilBtn(scanId) + '</div>';
+                    return '<div class="inline-flex items-center justify-start gap-1">' + deleteScanBtn(scanId) + pencilBtn(scanId) + '</div>';
                 }
 
                 function formatLastScan(iso) {
@@ -309,11 +318,15 @@
                     return iso;
                 }
 
-                document.querySelectorAll('.js-list-scan').forEach((btn) => {
-                    btn.addEventListener('click', async () => {
-                        const url = btn.getAttribute('data-url');
-                        if (!url || !csrf) return;
-                        btn.disabled = true;
+                const errEl = document.getElementById('list-edit-scan-error');
+                const form = document.getElementById('list-edit-scan-form');
+                const listTbody = document.querySelector('table tbody');
+                listTbody?.addEventListener('click', async (e) => {
+                    const regBtn = e.target.closest('.js-list-scan');
+                    if (regBtn && csrf) {
+                        const url = regBtn.getAttribute('data-url');
+                        if (!url) return;
+                        regBtn.disabled = true;
                         try {
                             const res = await fetch(url, {
                                 method: 'POST',
@@ -329,7 +342,7 @@
                             if (!res.ok) {
                                 throw new Error(data.message || 'No se pudo registrar el escaneo.');
                             }
-                            const tr = btn.closest('tr');
+                            const tr = regBtn.closest('tr');
                             if (tr) {
                                 tr.classList.remove(
                                     'bg-white', 'dark:bg-gray-900', 'hover:bg-gray-50', 'dark:hover:bg-gray-800/90',
@@ -353,11 +366,86 @@
                                 applyListGridFilter();
                                 updateListCountersFromData(data);
                             }
-                        } catch (e) {
-                            alert(e.message || 'Error');
-                            btn.disabled = false;
+                        } catch (err) {
+                            alert(err.message || 'Error');
+                            regBtn.disabled = false;
                         }
-                    });
+                        return;
+                    }
+
+                    const delBtn = e.target.closest('.js-list-delete-scan');
+                    if (delBtn && csrf) {
+                        const scanId = delBtn.getAttribute('data-scan-id');
+                        if (!scanId) return;
+                        if (!window.confirm('¿Eliminar este escaneo?')) return;
+                        delBtn.disabled = true;
+                        try {
+                            const res = await fetch(scanBaseUrl + '/' + scanId, {
+                                method: 'DELETE',
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'X-CSRF-TOKEN': csrf,
+                                    'X-Requested-With': 'XMLHttpRequest',
+                                },
+                            });
+                            const data = await res.json().catch(() => ({}));
+                            if (!res.ok) {
+                                throw new Error(data.message || 'No se pudo eliminar el escaneo.');
+                            }
+                            const tr = delBtn.closest('tr');
+                            if (tr && data.revert_to_pending === true && data.register_url) {
+                                tr.classList.remove(
+                                    'bg-emerald-200/90', 'dark:bg-emerald-900/50', 'hover:bg-emerald-300/95', 'dark:hover:bg-emerald-800/55',
+                                    'border-l-4', 'border-emerald-600', 'dark:border-emerald-400'
+                                );
+                                tr.classList.add(
+                                    'bg-white', 'dark:bg-gray-900', 'hover:bg-gray-50', 'dark:hover:bg-gray-800/90',
+                                    'border-l-4', 'border-gray-200', 'dark:border-gray-600'
+                                );
+                                const est = tr.querySelector('.estado-cell');
+                                if (est) est.innerHTML = estadoPendienteHtml;
+                                const l = tr.querySelector('.last-scan-cell');
+                                if (l) l.textContent = '—';
+                                const act = tr.querySelector('.actions-cell');
+                                if (act) act.innerHTML = pendingRegisterCheckBtn(data.register_url);
+                                refreshListRowSearchBlob(tr);
+                            } else if (tr) {
+                                tr.remove();
+                            }
+                            updateListCountersFromData(data);
+                            applyListGridFilter();
+                        } catch (err) {
+                            alert(err.message || 'Error');
+                            delBtn.disabled = false;
+                        }
+                        return;
+                    }
+
+                    const editBtn = e.target.closest('.js-list-edit-scan');
+                    if (!editBtn || !csrf) return;
+                    const editScanId = editBtn.getAttribute('data-scan-id');
+                    if (!editScanId) return;
+                    errEl.classList.add('hidden');
+                    errEl.textContent = '';
+                    try {
+                        const res = await fetch(scanBaseUrl + '/' + editScanId + '/edit-data', {
+                            headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                        });
+                        const editData = await res.json().catch(() => ({}));
+                        if (!res.ok) {
+                            throw new Error(editData.message || 'No se pudo cargar el escaneo.');
+                        }
+                        const s = editData.scan;
+                        document.getElementById('list-edit-scan-id').value = String(s.id);
+                        document.getElementById('list-edit-value').value = s.value || '';
+                        document.getElementById('list-edit-id-list').value = s.id_list || '';
+                        document.getElementById('list-edit-qr-list').value = s.qr_list || '';
+                        document.getElementById('list-edit-observations').value = s.observations || '';
+                        document.getElementById('list-edit-scanned-at').value = s.scanned_at || '';
+                        window.dispatchEvent(new CustomEvent('open-modal', { detail: 'list-edit-scan-modal' }));
+                    } catch (err) {
+                        alert(err.message || 'Error');
+                    }
                 });
 
                 const listManualModalName = 'list-manual-scan-modal';
@@ -511,37 +599,6 @@
                             listManualError.textContent = error.message || 'No se pudo guardar el scan manual.';
                             listManualError.classList.remove('hidden');
                         }
-                    }
-                });
-
-                const errEl = document.getElementById('list-edit-scan-error');
-                const form = document.getElementById('list-edit-scan-form');
-
-                document.querySelector('table tbody')?.addEventListener('click', async (e) => {
-                    const editBtn = e.target.closest('.js-list-edit-scan');
-                    if (!editBtn || !csrf) return;
-                    const scanId = editBtn.getAttribute('data-scan-id');
-                    if (!scanId) return;
-                    errEl.classList.add('hidden');
-                    errEl.textContent = '';
-                    try {
-                        const res = await fetch(scanBaseUrl + '/' + scanId + '/edit-data', {
-                            headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
-                        });
-                        const data = await res.json().catch(() => ({}));
-                        if (!res.ok) {
-                            throw new Error(data.message || 'No se pudo cargar el escaneo.');
-                        }
-                        const s = data.scan;
-                        document.getElementById('list-edit-scan-id').value = String(s.id);
-                        document.getElementById('list-edit-value').value = s.value || '';
-                        document.getElementById('list-edit-id-list').value = s.id_list || '';
-                        document.getElementById('list-edit-qr-list').value = s.qr_list || '';
-                        document.getElementById('list-edit-observations').value = s.observations || '';
-                        document.getElementById('list-edit-scanned-at').value = s.scanned_at || '';
-                        window.dispatchEvent(new CustomEvent('open-modal', { detail: 'list-edit-scan-modal' }));
-                    } catch (err) {
-                        alert(err.message || 'Error');
                     }
                 });
 
