@@ -66,5 +66,22 @@ class DashboardController extends Controller
         return redirect()->route('scanners.start');
     }
 
-   
+    public function setEventContext(Request $request, int $eventId)
+    {
+        $event = Event::findOrFail($eventId);
+        $user = $request->user();
+
+        if (! $user->hasEvent($eventId) && ! $user->isAdmin()) {
+            abort(404);
+        }
+
+        $request->session()->put('currentEvent', $event->id);
+        $request->session()->put('currentEventName', $event->name);
+
+        $isStorageType = (int) ($event->scan_type ?? 1) === 2;
+
+        return response()->json([
+            'is_storage_type' => $isStorageType,
+        ]);
+    }
 }
