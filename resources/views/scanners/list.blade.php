@@ -66,7 +66,7 @@
                             <tr>
                                 <th class="px-3 py-2 text-left font-semibold text-gray-700 dark:text-gray-200 w-28">Acciones</th>
                                 <th class="px-3 py-2 text-left font-semibold text-gray-700 dark:text-gray-200">ID</th>
-                                <th class="px-3 py-2 text-left font-semibold text-gray-700 dark:text-gray-200">QR</th>
+                                <th class="px-3 py-2 text-left font-semibold text-gray-700 dark:text-gray-200 min-w-[18rem] max-w-2xl w-[28%]">QR</th>
                                 <th class="px-3 py-2 text-left font-semibold text-gray-700 dark:text-gray-200">Observaciones</th>
                                 <th class="list-col-wide-only px-3 py-2 text-left font-semibold text-gray-700 dark:text-gray-200">Estado</th>
                                 <th class="list-col-wide-only px-3 py-2 text-left font-semibold text-gray-700 dark:text-gray-200">Registrado</th>
@@ -140,7 +140,7 @@
                                         @endif
                                     </td>
                                     <td class="px-3 py-2 whitespace-nowrap id-display-cell">{{ $gTable }}</td>
-                                    <td class="px-3 py-2 break-all max-w-xs qr-display-cell">{{ $gQr }}</td>
+                                    <td class="px-3 py-2 break-words min-w-[18rem] max-w-2xl w-[28%] qr-display-cell">{{ $gQr }}</td>
                                     <td class="px-3 py-2 text-gray-600 dark:text-gray-300 max-w-xs break-words obs-display-cell">{{ $gObs !== '' ? $gObs : '—' }}</td>
                                     <td class="list-col-wide-only px-3 py-2 whitespace-nowrap estado-cell">
                                         @if($gPending)
